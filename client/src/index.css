@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Thin, unobtrusive scrollbars that match the theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(212 212 216) transparent;
+}
+.dark * {
+  scrollbar-color: rgb(63 63 70) transparent;
+}

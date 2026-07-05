@@ -1,0 +1,30 @@
+{
+  "name": "job-scout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A minimalist dashboard that curates entry-level & early-career job postings (<= 3 years experience) for freshers.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "postinstall": "echo \"JobScout ready. Run 'npm run dev' to start the API + dashboard.\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tejas6996/Job_scout.git"
+  },
+  "license": "MIT"
+}
