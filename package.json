@@ -9,12 +9,15 @@
   },
   "workspaces": [
     "server",
-    "client"
+    "client",
+    "pipeline"
   ],
   "scripts": {
     "dev": "concurrently -n api,web -c blue,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
+    "dev:pipeline": "npm run dev -w pipeline",
+    "pipeline:once": "npm run once -w pipeline",
     "build": "npm run build -w client",
     "start": "npm run start -w server",
     "postinstall": "echo \"JobScout ready. Run 'npm run dev' to start the API + dashboard.\""
