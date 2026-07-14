@@ -1,7 +1,11 @@
-// Remotive — remote jobs API. Free, no key required.
+// Remotive — remote jobs API. Free, no key required. Global-remote, not
+// India-scoped at the API level — like Jobicy, this only contributes
+// "Remote – India" candidates (candidate_required_location is the only
+// India signal Remotive gives us).
 // Docs: https://github.com/remotive-com/remote-jobs-api
 import { fetchJson } from '../util/fetchJson.js';
 import { stripHtml } from '../util/html.js';
+import { normalizeProviderJob } from './provider.js';
 
 export const SOURCE_NAME = 'remotive';
 
@@ -15,9 +19,8 @@ export async function fetchJobs() {
 
 function normalize(j) {
   if (!j || !j.url || !j.title) return null;
-  return {
+  return normalizeProviderJob({
     id: `remotive-${j.id}`,
-    source: SOURCE_NAME,
     title: String(j.title).trim(),
     company: String(j.company_name || 'Unknown').trim(),
     companyLogo: j.company_logo_url || j.company_logo || null,
@@ -28,10 +31,11 @@ function normalize(j) {
     tags: Array.isArray(j.tags) ? j.tags.slice(0, 6) : [],
     category: j.category || null,
     jobType: j.job_type || null,
-    salary: j.salary || null,
+    compensationText: j.salary || '',
+    experienceText: '',
     rawLevel: '',
     descriptionText: stripHtml(j.description || ''),
-  };
+  }, SOURCE_NAME);
 }
 
 function toIso(value) {
