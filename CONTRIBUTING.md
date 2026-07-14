@@ -38,10 +38,13 @@ npm run dev      # API on :8787, dashboard on :5173 -> open http://localhost:517
 
 ## Good first tasks
 
-- **Improve the fresher filter** — tune the keyword lists in `server/src/fresher.js`
-  (e.g. more junior/senior signals, better experience-range parsing).
-- **Add a new job source** — copy an adapter in `server/src/sources/`, normalize it to
-  the same shape, and add it to `server/src/sources/index.js`.
+- **Improve the fresher filter** — tune the keyword lists in `config/india.yaml`, or the
+  regex rules in `server/src/filters/stageA.js` (better experience-range parsing, more
+  junior/senior signals).
+- **Add a new job source** — see "Adding a new source" in the README: one adapter file in
+  `server/src/sources/`, registered in `server/src/sources/index.js` and toggled on in
+  `config/india.yaml`. Naukri/Internshala/Unstop/etc. need a scraping-based adapter — see
+  MIGRATION.md for context on why those aren't implemented yet.
 - **UI polish** — components live in `client/src/components/`.
 - **Save / bookmark jobs** — a "saved jobs" view using `localStorage` would be a great feature.
 
