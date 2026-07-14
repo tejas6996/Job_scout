@@ -1,86 +1,40 @@
-// Aggregates every source into one normalized, fresher-scored job pool.
-// Uses Promise.allSettled so one failing/slow source never takes down the rest.
+// Fans out to every enabled provider (Promise.allSettled — one dead source
+// never takes down the rest) and hands the raw results to the shared
+// pipeline (server/src/pipeline.js) for filtering/dedupe/scoring.
 import * as jobicy from './jobicy.js';
 import * as remotive from './remotive.js';
-import * as arbeitnow from './arbeitnow.js';
-import { evaluateFresher } from '../fresher.js';
-import { excerpt } from '../util/html.js';
-import { detectLanguage } from '../util/lang.js';
+import * as adzuna from './adzuna.js';
+import * as jsearch from './jsearch.js';
+import * as atsBoards from './atsBoards.js';
+import { loadConfig } from '../config/loadConfig.js';
+import { runPipeline } from '../pipeline.js';
 
-const SOURCES = [jobicy, remotive, arbeitnow];
+const PROVIDERS = { jobicy, remotive, adzuna, jsearch, ats_boards: atsBoards };
+export const PROVIDER_NAMES = Object.keys(PROVIDERS);
 
-// Drop stale postings so freshers don't apply to roles that are long filled.
-const MAX_AGE_DAYS = Number(process.env.MAX_AGE_DAYS || 60);
-const MAX_AGE_MS = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
-
-function isFresh(postedAt) {
-  const t = new Date(postedAt).getTime();
-  if (!Number.isFinite(t)) return true; // keep if the date is unparseable
-  const age = Date.now() - t;
-  return age <= MAX_AGE_MS && age >= -2 * 24 * 60 * 60 * 1000; // allow small clock skew
+function enabledProviders(cfg) {
+  return Object.entries(PROVIDERS).filter(([name]) => cfg.sources[name]);
 }
 
 export async function fetchAllJobs() {
-  const settled = await Promise.allSettled(SOURCES.map((s) => s.fetchJobs()));
+  const cfg = loadConfig();
+  const providers = enabledProviders(cfg);
 
-  const collected = [];
+  const settled = await Promise.allSettled(providers.map(([, mod]) => mod.fetchJobs(cfg)));
+
+  const rawJobs = [];
   const meta = [];
 
   settled.forEach((result, i) => {
-    const name = SOURCES[i].SOURCE_NAME;
+    const [name] = providers[i];
     if (result.status === 'fulfilled') {
-      collected.push(...result.value);
+      rawJobs.push(...result.value);
       meta.push({ source: name, ok: true, count: result.value.length });
     } else {
-      meta.push({
-        source: name,
-        ok: false,
-        count: 0,
-        error: String(result.reason?.message || result.reason),
-      });
+      meta.push({ source: name, ok: false, count: 0, error: String(result.reason?.message || result.reason) });
     }
   });
 
-  const seen = new Set();
-  const jobs = [];
-
-  for (const job of collected) {
-    if (!isFresh(job.postedAt)) continue;
-
-    // De-duplicate the same posting surfaced by more than one source.
-    const key = `${job.title}::${job.company}`.toLowerCase().replace(/\s+/g, ' ').trim();
-    if (seen.has(key)) continue;
-    seen.add(key);
-
-    const fresher = evaluateFresher({
-      title: job.title,
-      tags: job.tags,
-      levelField: job.rawLevel,
-      text: job.descriptionText,
-    });
-
-    const shortExcerpt = excerpt(job.descriptionText, 220);
-    const language = detectLanguage(`${job.title} ${shortExcerpt}`);
-
-    jobs.push({
-      id: job.id,
-      source: job.source,
-      title: job.title,
-      company: job.company,
-      companyLogo: job.companyLogo,
-      url: job.url,
-      location: job.location,
-      remote: job.remote,
-      postedAt: job.postedAt,
-      tags: job.tags,
-      category: job.category,
-      jobType: job.jobType,
-      salary: job.salary,
-      language,
-      excerpt: shortExcerpt,
-      fresher,
-    });
-  }
-
+  const { jobs } = await runPipeline(rawJobs, cfg);
   return { jobs, meta };
 }

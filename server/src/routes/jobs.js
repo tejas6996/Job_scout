@@ -1,13 +1,14 @@
 import express from 'express';
 import { getPool } from '../pool.js';
+import { PROVIDER_NAMES } from '../sources/index.js';
+import { allCanonicalLocations, canonicalLabel } from '../location.js';
 
 const router = express.Router();
 
-const VALID_SOURCES = new Set(['jobicy', 'remotive', 'arbeitnow']);
-const VALID_SORTS = new Set(['recent', 'relevant']);
-const VALID_LEVELS = new Set(['all', 'internship', 'entry', 'junior', 'open']);
-
-const CONFIDENCE_SCORE = { high: 3, medium: 2, low: 1 };
+const VALID_SOURCES = new Set(PROVIDER_NAMES);
+const VALID_SORTS = new Set(['recent', 'relevant', 'deadline']);
+const VALID_ROLE_TYPES = new Set(['all', 'internship', 'apprenticeship', 'trainee', 'full_time_entry']);
+const VALID_LOCATIONS = new Set(['all', ...allCanonicalLocations()]);
 
 // GET /api/jobs — filtered, sorted, paginated fresher-friendly jobs.
 router.get('/jobs', async (req, res) => {
@@ -28,13 +29,15 @@ router.get('/jobs', async (req, res) => {
   const q = str(req.query.q, 80).toLowerCase();
   const source = VALID_SOURCES.has(req.query.source) ? req.query.source : '';
   const remote = req.query.remote === 'true' ? true : req.query.remote === 'false' ? false : null;
-  const level = VALID_LEVELS.has(req.query.level) ? req.query.level : 'all';
-  const lang = req.query.lang === 'all' ? 'all' : 'en'; // default: English only
+  const roleType = VALID_ROLE_TYPES.has(req.query.level) ? req.query.level : 'all';
+  const location = VALID_LOCATIONS.has(req.query.location) ? req.query.location : 'all';
   const sort = VALID_SORTS.has(req.query.sort) ? req.query.sort : 'relevant';
   const page = clampInt(req.query.page, 1, 1, 1000);
   const limit = clampInt(req.query.limit, 24, 1, 60);
 
-  let jobs = pool.jobs.filter((j) => j.fresher.eligible);
+  // pool.jobs only ever contains fresher-eligible jobs — filtering already
+  // happened in server/src/sources/index.js (Stage A/B classification).
+  let jobs = pool.jobs;
 
   if (q) {
     jobs = jobs.filter((j) =>
@@ -43,13 +46,15 @@ router.get('/jobs', async (req, res) => {
   }
   if (source) jobs = jobs.filter((j) => j.source === source);
   if (remote !== null) jobs = jobs.filter((j) => j.remote === remote);
-  if (level !== 'all') jobs = jobs.filter((j) => j.fresher.level === level);
-  if (lang !== 'all') jobs = jobs.filter((j) => j.language === 'en');
+  if (roleType !== 'all') jobs = jobs.filter((j) => j.fresher.role_type === roleType);
+  if (location !== 'all') jobs = jobs.filter((j) => j.locationCanonical === location);
 
   jobs = jobs.slice().sort((a, b) => {
-    if (sort === 'relevant') {
-      const byConf = (CONFIDENCE_SCORE[b.fresher.confidence] || 0) - (CONFIDENCE_SCORE[a.fresher.confidence] || 0);
-      if (byConf !== 0) return byConf;
+    if (sort === 'relevant') return (b.fitScore || 0) - (a.fitScore || 0);
+    if (sort === 'deadline') {
+      const aHas = a.applyBy ? new Date(a.applyBy).getTime() : Infinity;
+      const bHas = b.applyBy ? new Date(b.applyBy).getTime() : Infinity;
+      if (aHas !== bHas) return aHas - bHas;
     }
     return new Date(b.postedAt) - new Date(a.postedAt);
   });
@@ -72,16 +77,16 @@ router.get('/jobs', async (req, res) => {
   });
 });
 
-// GET /api/meta — source status + counts (handy for a status bar / debugging).
+// GET /api/meta — source status + counts + the canonical location list
+// (handy for building the location filter dropdown / a status bar).
 router.get('/meta', async (req, res) => {
   try {
     const pool = await getPool();
-    const eligible = pool.jobs.filter((j) => j.fresher.eligible).length;
     res.json({
-      totalFetched: pool.jobs.length,
-      fresherEligible: eligible,
+      totalKept: pool.jobs.length,
       sources: pool.meta,
       updatedAt: pool.updatedAt,
+      locations: allCanonicalLocations().map((key) => ({ key, label: canonicalLabel(key) })),
     });
   } catch (err) {
     res.status(502).json({ error: 'Sources unavailable', sources: [] });
