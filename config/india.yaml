@@ -128,6 +128,12 @@ rate_limits:
   max_concurrent_per_source: 3
   retry_attempts: 3
   retry_base_delay_ms: 1000
+  # How often the server proactively re-polls every source in the
+  # background (server/src/pool.js) and refreshes the in-memory job pool,
+  # independent of whether anyone is currently loading the dashboard.
+  # JSearch's key has a fixed *total* request cap (not daily) — lowering
+  # this burns through it proportionally faster.
+  background_refresh_minutes: 15
 
 llm:
   # Stage B classifier — only invoked when Stage A can't decide.

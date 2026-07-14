@@ -40,6 +40,15 @@ export default function App() {
     localStorage.setItem('jobscout-theme', theme);
   }, [theme]);
 
+  // ---- Auto-refresh: the server re-polls sources every ~15 min in the
+  // background (server/src/pool.js), so re-fetching from here every 5 min
+  // is enough to reflect that promptly without hammering our own API. ----
+  useEffect(() => {
+    const AUTO_REFRESH_MS = 5 * 60 * 1000;
+    const interval = setInterval(() => setNonce((n) => n + 1), AUTO_REFRESH_MS);
+    return () => clearInterval(interval);
+  }, []);
+
   // ---- Debounce the search box ----
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQ(filters.q.trim()), 300);

@@ -8,6 +8,7 @@ import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import jobsRouter from './routes/jobs.js';
+import { startBackgroundRefresh } from './pool.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -71,3 +72,5 @@ app.listen(PORT, () => {
   console.log(`JobScout API running on http://localhost:${PORT}`);
   console.log(`Allowed origins: ${ORIGINS.join(', ')}`);
 });
+
+startBackgroundRefresh();
