@@ -128,12 +128,23 @@ rate_limits:
   max_concurrent_per_source: 3
   retry_attempts: 3
   retry_base_delay_ms: 1000
-  # How often the server proactively re-polls every source in the
-  # background (server/src/pool.js) and refreshes the in-memory job pool,
-  # independent of whether anyone is currently loading the dashboard.
-  # JSearch's key has a fixed *total* request cap (not daily) — lowering
-  # this burns through it proportionally faster.
+  # How often the server proactively re-polls sources in the background
+  # (server/src/pool.js) and refreshes the in-memory job pool, independent
+  # of whether anyone is currently loading the dashboard. This is the
+  # default cadence — override per-source below for sources with a tighter
+  # quota than Adzuna/Greenhouse/Lever's generous daily budgets.
   background_refresh_minutes: 15
+
+  # Per-source overrides (minutes) for sources whose default cadence would
+  # exhaust a limited quota. A source with no entry here uses
+  # background_refresh_minutes. JSearch's key has a fixed *total* request
+  # cap (not a daily one) — at the default 15-min cadence x 2 priority
+  # cities/cycle it would burn ~192 req/day, exhausting a 200-request quota
+  # in under a day. At 480 min (8h) x 2 cities = ~6 req/day, a 171-request
+  # remaining balance lasts ~28 days, comfortably past a ~20-day reset
+  # window even accounting for retries.
+  source_refresh_minutes:
+    jsearch: 480
 
 llm:
   # Stage B classifier — only invoked when Stage A can't decide.
