@@ -1,0 +1,135 @@
+# JobScout — India / freshers configuration.
+# Single source of truth for locations, keywords, thresholds and source
+# toggles. Nothing in server/src should hardcode these values directly —
+# read them via server/src/config/loadConfig.js instead.
+
+locations:
+  # Every key a source/city string can normalize to. Add new aliases here,
+  # not in code — server/src/location.js just reads this table.
+  canonical:
+    bengaluru: [bengaluru, bangalore, blr, "bangalore urban", "bengaluru urban"]
+    gurugram: [gurugram, gurgaon]
+    delhi_ncr: [delhi, "new delhi", ncr, "delhi ncr", "national capital region"]
+    mumbai: [mumbai, bombay]
+    hyderabad: [hyderabad, secunderabad]
+    pune: [pune]
+    chennai: [chennai, madras]
+    noida: [noida, "greater noida"]
+    kolkata: [kolkata, calcutta]
+    ahmedabad: [ahmedabad]
+    coimbatore: [coimbatore]
+    remote_india: ["remote india", "remote - india", "remote-india", "pan india remote"]
+    hybrid: [hybrid]
+
+  # Cities boosted in fit scoring (server/src/scoring.js). Order doesn't
+  # matter — all listed cities get an equal boost, unlisted ones don't.
+  priority: [bengaluru, hyderabad, remote_india]
+
+roles:
+  # Stage A treats a posting as in-scope only if the title/description hits
+  # one of these keywords. Kept broad on purpose — the experience filter
+  # (not this list) is what does the fresher/senior separation.
+  include_keywords:
+    - software engineer
+    - swe
+    - developer
+    - programmer
+    - data analyst
+    - data engineer
+    - business analyst
+    - bi analyst
+    - business intelligence
+    - analytics engineer
+    - machine learning
+    - ml engineer
+    - ai engineer
+    - data science
+    - qa engineer
+    - test engineer
+    - sde
+    - full stack
+    - frontend
+    - backend
+    - devops
+    - support engineer
+    - graduate engineer trainee
+    - management trainee
+    - campus hire
+
+  # Hard-exclude if any of these appear in the title (word-bounded matching
+  # is applied in code — this list is just the raw terms).
+  exclude_title_keywords:
+    - senior
+    - sr.
+    - lead
+    - principal
+    - staff
+    - architect
+    - manager
+    - head of
+    - director
+    - "ii"
+    - "iii"
+
+experience:
+  max_years: 2
+  # Phrases that count as a fresher-eligible role type regardless of a
+  # missing/ambiguous years figure.
+  fresher_role_signals:
+    - fresher
+    - freshers only
+    - intern
+    - internship
+    - apprentice
+    - apprenticeship
+    - trainee
+    - graduate engineer trainee
+    - get
+    - management trainee
+    - campus hire
+    - new grad
+    - entry level
+    - entry-level
+    - junior
+
+freshness:
+  max_age_days: 21
+
+sources:
+  # Toggle a provider on/off without touching code. Providers without a
+  # public free API (naukri, internshala, unstop, linkedin_india,
+  # indeed_india, wellfound_india, instahyre, hirist, foundit) are wired
+  # into the provider registry but disabled by default until a scraping or
+  # paid-API implementation lands — see MIGRATION.md.
+  jobicy: true
+  remotive: true
+  adzuna: true
+  jsearch: true
+  ats_boards: true
+  naukri: false
+  internshala: false
+  unstop: false
+  foundit: false
+  instahyre: false
+  hirist: false
+  linkedin_india: false
+  indeed_india: false
+  wellfound_india: false
+
+  # Company boards for the ats_boards provider (Greenhouse/Lever — free,
+  # unbounded per company, no API key). Add any India-hiring company here.
+  ats_companies:
+    - { type: greenhouse, token: groww }
+    - { type: greenhouse, token: postman }
+    - { type: lever, token: cred }
+
+rate_limits:
+  # Per-source concurrent request cap + backoff used by server/src/util/fetchJson.js.
+  max_concurrent_per_source: 3
+  retry_attempts: 3
+  retry_base_delay_ms: 1000
+
+llm:
+  # Stage B classifier — only invoked when Stage A can't decide.
+  provider: gemini
+  model: gemini-2.5-flash-lite
