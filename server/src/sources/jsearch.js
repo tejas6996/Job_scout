@@ -41,7 +41,7 @@ export async function fetchJobs(cfg) {
         num_pages: '1',
       });
       const body = await withRetry(() => fetchJSearchPage(apiKey, params), cfg);
-      return body?.data || [];
+      return body?.data?.jobs || [];
     }),
   );
 
