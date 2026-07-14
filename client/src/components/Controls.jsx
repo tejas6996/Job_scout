@@ -1,7 +1,33 @@
-import { SearchIcon, GlobeIcon } from './icons.jsx';
+import { SearchIcon } from './icons.jsx';
 
 const SELECT_CLASS =
   'h-9 rounded-lg border border-zinc-200 bg-white px-2.5 text-sm text-zinc-700 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200';
+
+const LOCATION_OPTIONS = [
+  ['all', 'All locations'],
+  ['bengaluru', 'Bengaluru'],
+  ['hyderabad', 'Hyderabad'],
+  ['remote_india', 'Remote – India'],
+  ['gurugram', 'Gurugram'],
+  ['delhi_ncr', 'Delhi NCR'],
+  ['mumbai', 'Mumbai'],
+  ['pune', 'Pune'],
+  ['chennai', 'Chennai'],
+  ['noida', 'Noida'],
+  ['kolkata', 'Kolkata'],
+  ['ahmedabad', 'Ahmedabad'],
+  ['coimbatore', 'Coimbatore'],
+  ['hybrid', 'Hybrid'],
+];
+
+const SOURCE_OPTIONS = [
+  ['', 'All sources'],
+  ['jobicy', 'Jobicy'],
+  ['remotive', 'Remotive'],
+  ['adzuna', 'Adzuna'],
+  ['jsearch', 'JSearch'],
+  ['ats_boards', 'Company boards'],
+];
 
 export default function Controls({ filters, onChange, onReset, hasActiveFilters }) {
   return (
@@ -20,27 +46,28 @@ export default function Controls({ filters, onChange, onReset, hasActiveFilters 
 
       <div className="flex flex-wrap items-center gap-2">
         <Select
-          label="Experience"
+          label="Location"
+          value={filters.location}
+          onChange={(v) => onChange('location', v)}
+          options={LOCATION_OPTIONS}
+        />
+        <Select
+          label="Role type"
           value={filters.level}
           onChange={(v) => onChange('level', v)}
           options={[
-            ['all', 'All levels'],
+            ['all', 'All role types'],
             ['internship', 'Internship'],
-            ['entry', 'Entry level'],
-            ['junior', '≤ 3 yrs'],
-            ['open', 'Open to freshers'],
+            ['apprenticeship', 'Apprenticeship'],
+            ['trainee', 'Trainee / GET'],
+            ['full_time_entry', 'Full-time (entry)'],
           ]}
         />
         <Select
           label="Source"
           value={filters.source}
           onChange={(v) => onChange('source', v)}
-          options={[
-            ['', 'All sources'],
-            ['jobicy', 'Jobicy'],
-            ['remotive', 'Remotive'],
-            ['arbeitnow', 'Arbeitnow'],
-          ]}
+          options={SOURCE_OPTIONS}
         />
         <Select
           label="Sort"
@@ -49,21 +76,12 @@ export default function Controls({ filters, onChange, onReset, hasActiveFilters 
           options={[
             ['relevant', 'Best match'],
             ['recent', 'Most recent'],
+            ['deadline', 'Deadline soonest'],
           ]}
         />
 
-        <Toggle
-          active={filters.remote}
-          onClick={() => onChange('remote', !filters.remote)}
-        >
+        <Toggle active={filters.remote} onClick={() => onChange('remote', !filters.remote)}>
           Remote only
-        </Toggle>
-        <Toggle
-          active={filters.includeNonEnglish}
-          onClick={() => onChange('includeNonEnglish', !filters.includeNonEnglish)}
-          icon={<GlobeIcon width={14} height={14} />}
-        >
-          Include non-English
         </Toggle>
 
         {hasActiveFilters && (

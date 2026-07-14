@@ -1,16 +1,18 @@
-import { relativeTime, initials, colorFromString } from '../lib/format.js';
+import { relativeTime, initials, colorFromString, formatCompensation, formatDeadline } from '../lib/format.js';
 import { MapPinIcon, ClockIcon, ExternalLinkIcon } from './icons.jsx';
 
-const LEVEL_BADGE = {
+const ROLE_TYPE_BADGE = {
   internship: { label: 'Internship', className: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300' },
-  entry: { label: 'Entry level', className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300' },
-  junior: { label: '≤ 3 yrs exp', className: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300' },
-  open: { label: 'Open to freshers', className: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300' },
+  apprenticeship: { label: 'Apprenticeship', className: 'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-300' },
+  trainee: { label: 'Trainee / GET', className: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300' },
+  full_time_entry: { label: 'Entry level', className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300' },
 };
 
 export default function JobCard({ job }) {
-  const badge = LEVEL_BADGE[job.fresher?.level] || LEVEL_BADGE.open;
+  const badge = ROLE_TYPE_BADGE[job.fresher?.role_type] || { label: 'Fresher-friendly', className: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300' };
   const tags = (job.tags || []).filter(Boolean).slice(0, 3);
+  const compensationLabel = formatCompensation(job.compensation);
+  const deadlineLabel = formatDeadline(job.applyBy);
 
   return (
     <article className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-hover dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
@@ -42,6 +44,19 @@ export default function JobCard({ job }) {
           {relativeTime(job.postedAt)}
         </span>
       </div>
+
+      {(compensationLabel || deadlineLabel) && (
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px]">
+          {compensationLabel && (
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">{compensationLabel}</span>
+          )}
+          {deadlineLabel && (
+            <span className="rounded bg-rose-50 px-1.5 py-0.5 text-[11px] font-medium text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">
+              {deadlineLabel}
+            </span>
+          )}
+        </div>
+      )}
 
       {job.excerpt && (
         <p className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">

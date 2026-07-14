@@ -10,10 +10,10 @@ import { fetchJobs } from './lib/api.js';
 const DEFAULT_FILTERS = {
   q: '',
   level: 'all',
+  location: 'all',
   source: '',
   sort: 'relevant',
   remote: false,
-  includeNonEnglish: false,
 };
 
 function getInitialTheme() {
@@ -49,7 +49,7 @@ export default function App() {
   // ---- Reset to page 1 whenever a filter changes ----
   useEffect(() => {
     setPage(1);
-  }, [debouncedQ, filters.level, filters.source, filters.sort, filters.remote, filters.includeNonEnglish]);
+  }, [debouncedQ, filters.level, filters.location, filters.source, filters.sort, filters.remote]);
 
   // ---- Fetch jobs ----
   useEffect(() => {
@@ -61,10 +61,10 @@ export default function App() {
       {
         q: debouncedQ,
         level: filters.level,
+        location: filters.location,
         source: filters.source,
         sort: filters.sort,
         remote: filters.remote ? 'true' : '',
-        lang: filters.includeNonEnglish ? 'all' : 'en',
         page,
         limit: 24,
       },
@@ -82,7 +82,7 @@ export default function App() {
       });
 
     return () => controller.abort();
-  }, [debouncedQ, filters.level, filters.source, filters.sort, filters.remote, filters.includeNonEnglish, page, nonce]);
+  }, [debouncedQ, filters.level, filters.location, filters.source, filters.sort, filters.remote, page, nonce]);
 
   const updateFilter = useCallback((key, value) => {
     setFilters((f) => ({ ...f, [key]: value }));
@@ -109,11 +109,11 @@ export default function App() {
       <main className="mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
         <section className="mb-6">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Find your first roles, faster.
+            Find your first role in India, faster.
           </h2>
           <p className="mt-1.5 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
-            Curated internships and early-career jobs (under ~3 years of experience), pulled from free
-            job boards and filtered to skip senior-only postings.
+            Curated internships, trainee programs and entry-level jobs (0–2 years) across Bengaluru,
+            Hyderabad, Remote-India and more — filtered to skip senior-only postings.
           </p>
         </section>
 
@@ -145,7 +145,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
-        JobScout · aggregated from Jobicy, Remotive &amp; Arbeitnow · built for freshers
+        JobScout · India-only, freshers-only · aggregated from Adzuna, JSearch, company boards &amp; more
       </footer>
     </div>
   );
