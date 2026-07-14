@@ -1,0 +1,290 @@
+[
+  {
+    "id": "fx-01", "source": "test", "title": "Software Engineer - Fresher", "company": "TechCorp",
+    "companyLogo": null, "url": "https://example.com/1", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-10T00:00:00.000Z", "tags": ["java", "spring"], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "We are hiring freshers with 0-2 years of experience for our engineering team. Freshers only need apply.",
+    "compensationText": "CTC 5,50,000 per annum",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-02", "source": "test", "title": "Graduate Engineer Trainee (GET) - 2026 Batch", "company": "Manufacturing Ltd",
+    "companyLogo": null, "url": "https://example.com/2", "location": "Pune", "remote": false,
+    "postedAt": "2026-07-09T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "GET program for recent engineering graduates. No prior work experience required.",
+    "compensationText": "4.5 LPA",
+    "expected": { "decision": "include", "role_type": "trainee" }
+  },
+  {
+    "id": "fx-03", "source": "test", "title": "Data Analyst Intern", "company": "Groww",
+    "companyLogo": null, "url": "https://example.com/3", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-08T00:00:00.000Z", "tags": ["sql", "excel"], "category": null, "jobType": "Internship",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "3-month data analyst internship for students. Stipend provided.",
+    "compensationText": "₹15,000/month",
+    "expected": { "decision": "include", "role_type": "internship" }
+  },
+  {
+    "id": "fx-04", "source": "test", "title": "Business Analyst - Entry Level", "company": "InsightCo",
+    "companyLogo": null, "url": "https://example.com/4", "location": "Hyderabad", "remote": false,
+    "postedAt": "2026-07-07T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Entry level business analyst role, 0–1 yrs experience preferred.",
+    "compensationText": "₹6,00,000 per annum",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-05", "source": "test", "title": "Junior Software Developer", "company": "BarSoft",
+    "companyLogo": null, "url": "https://example.com/5", "location": "Chennai", "remote": false,
+    "postedAt": "2026-07-06T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Looking for a junior developer with 1 to 2 years of experience in Node.js.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-06", "source": "test", "title": "Apprentice - Manufacturing", "company": "BazIndustries",
+    "companyLogo": null, "url": "https://example.com/6", "location": "Noida", "remote": false,
+    "postedAt": "2026-07-05T00:00:00.000Z", "tags": [], "category": null, "jobType": "Apprenticeship",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Apprenticeship program, 6 months of on-the-job training.",
+    "compensationText": "₹10,000/month",
+    "expected": { "decision": "include", "role_type": "apprenticeship" }
+  },
+  {
+    "id": "fx-07", "source": "test", "title": "Management Trainee - Sales", "company": "SalesCorp",
+    "companyLogo": null, "url": "https://example.com/7", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-04T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Management trainee program for campus hires from the 2026 batch.",
+    "compensationText": "Not Disclosed",
+    "expected": { "decision": "include", "role_type": "trainee" }
+  },
+  {
+    "id": "fx-08", "source": "test", "title": "Backend Developer", "company": "StartupX",
+    "companyLogo": null, "url": "https://example.com/8", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-03T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Exp: 0-2 Yrs. Freshers with strong DSA skills are welcome to apply.",
+    "compensationText": "6-9 LPA",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-09", "source": "test", "title": "QA Engineer - Freshers Only", "company": "QAInc",
+    "companyLogo": null, "url": "https://example.com/9", "location": "Kolkata", "remote": false,
+    "postedAt": "2026-07-02T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Freshers only. No prior experience needed for this QA role.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-10", "source": "test", "title": "SDE-1", "company": "BigTech",
+    "companyLogo": null, "url": "https://example.com/10", "location": "Gurugram", "remote": false,
+    "postedAt": "2026-07-01T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0–1 yrs of experience required for this full-time SDE-1 role.",
+    "compensationText": "8 LPA",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-11", "source": "test", "title": "ML Engineer Intern", "company": "AILabs",
+    "companyLogo": null, "url": "https://example.com/11", "location": "Remote - India", "remote": true,
+    "postedAt": "2026-06-30T00:00:00.000Z", "tags": [], "category": null, "jobType": "Internship",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "6 month internship on our ML engineering team.",
+    "compensationText": "₹25k per month",
+    "expected": { "decision": "include", "role_type": "internship" }
+  },
+  {
+    "id": "fx-12", "source": "test", "title": "Senior Software Engineer", "company": "TechCorp",
+    "companyLogo": null, "url": "https://example.com/12", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-10T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "5+ years of experience required in distributed systems.",
+    "compensationText": "25-30 LPA",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-13", "source": "test", "title": "Business Analyst", "company": "ConsultCo",
+    "companyLogo": null, "url": "https://example.com/13", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-09T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Minimum 4 years of experience required in business consulting.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-14", "source": "test", "title": "Lead Data Scientist", "company": "AICo",
+    "companyLogo": null, "url": "https://example.com/14", "location": "Hyderabad", "remote": false,
+    "postedAt": "2026-07-08T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Looking for a lead data scientist with 8 years of experience.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-15", "source": "test", "title": "Backend Developer", "company": "StartupY",
+    "companyLogo": null, "url": "https://example.com/15", "location": "Pune", "remote": false,
+    "postedAt": "2026-07-07T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Exp: 3-5 Yrs required. Strong backend engineering skills a must.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-16", "source": "test", "title": "Software Engineer II", "company": "BigCo",
+    "companyLogo": null, "url": "https://example.com/16", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-06T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "3+ years of experience, strong system design skills required.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-17", "source": "test", "title": "Engineering Manager", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/17", "location": "Chennai", "remote": false,
+    "postedAt": "2026-07-05T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Manage a team of 10 engineers. 6+ years of experience required.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-18", "source": "test", "title": "Principal Architect", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/18", "location": "Noida", "remote": false,
+    "postedAt": "2026-07-04T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "10+ years of software architecture experience required.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-19", "source": "test", "title": "Business Analyst - 2+ Years", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/19", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-03T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "2+ years of experience required in business analysis and reporting.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-20", "source": "test", "title": "Data Engineer", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/20", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-02T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "1 to 3 years of experience needed, strong SQL and Python skills.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-21", "source": "test", "title": "Team Lead - Data Engineering", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/21", "location": "Hyderabad", "remote": false,
+    "postedAt": "2026-07-01T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Head of the data engineering vertical, reporting to the VP Engineering.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-22", "source": "test", "title": "Staff Software Engineer", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/22", "location": "Pune", "remote": false,
+    "postedAt": "2026-06-30T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "8+ years of experience in distributed systems required.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-23", "source": "test", "title": "Software Engineer", "company": "MidCorp",
+    "companyLogo": null, "url": "https://example.com/23", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-10T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Join our engineering team and build great products. Strong CS fundamentals a plus.",
+    "compensationText": "",
+    "expected": { "decision": "undecided", "role_type": null }
+  },
+  {
+    "id": "fx-24", "source": "test", "title": "Data Analyst", "company": "AnalyticsCo",
+    "companyLogo": null, "url": "https://example.com/24", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-09T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Work with our data team on dashboards and reporting. SQL and Excel skills required.",
+    "compensationText": "",
+    "expected": { "decision": "undecided", "role_type": null }
+  },
+  {
+    "id": "fx-25", "source": "test", "title": "Business Development Associate", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/25", "location": "Delhi", "remote": false,
+    "postedAt": "2026-07-08T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Drive business growth initiatives. Great communication skills required.",
+    "compensationText": "",
+    "expected": { "decision": "undecided", "role_type": null }
+  },
+  {
+    "id": "fx-26", "source": "test", "title": "Product Support Specialist", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/26", "location": "Ahmedabad", "remote": false,
+    "postedAt": "2026-07-07T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Handle customer queries and support tickets for our platform.",
+    "compensationText": "",
+    "expected": { "decision": "undecided", "role_type": null }
+  },
+  {
+    "id": "fx-27", "source": "test", "title": "AI Engineer - Campus Hire 2026", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/27", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-06T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Campus hire program, open only to 2026 graduates.",
+    "compensationText": "10 LPA",
+    "expected": { "decision": "include", "role_type": "trainee" }
+  },
+  {
+    "id": "fx-28", "source": "test", "title": "DevOps Engineer", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/28", "location": "Coimbatore", "remote": false,
+    "postedAt": "2026-07-05T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years of experience, AWS/Docker knowledge a plus.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-29", "source": "test", "title": "Support Engineer - Entry Level", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/29", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-04T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Entry-level support role, no prior experience necessary.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-30", "source": "test", "title": "Frontend Developer Intern", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/30", "location": "Remote - India", "remote": true,
+    "postedAt": "2026-07-03T00:00:00.000Z", "tags": [], "category": null, "jobType": "Internship",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "React internship, 3 months, unpaid.",
+    "compensationText": "Unpaid",
+    "expected": { "decision": "include", "role_type": "internship" }
+  },
+  {
+    "id": "fx-31", "source": "test", "title": "Senior Manager - Analytics", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/31", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-02T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Lead a team of analysts. 7+ years of experience required.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-32", "source": "test", "title": "QA Automation Trainee", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/32", "location": "Hyderabad", "remote": false,
+    "postedAt": "2026-07-01T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Trainee program for automation testing, 0 years of experience required.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "trainee" }
+  }
+]
