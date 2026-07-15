@@ -124,12 +124,36 @@ sources:
   indeed_india: false
   wellfound_india: false
 
-  # Company boards for the ats_boards provider (Greenhouse/Lever — free,
-  # unbounded per company, no API key). Add any India-hiring company here.
+  # Company boards for the ats_boards provider — Greenhouse, Lever, Ashby,
+  # SmartRecruiters and Workable all publish a free, keyless, per-company
+  # JSON feed (see server/src/sources/atsBoards.js). Add any India-hiring
+  # company here; every token below was verified live (200 response + real
+  # Bengaluru postings) before being added, not guessed at.
   ats_companies:
     - { type: greenhouse, token: groww }
     - { type: greenhouse, token: postman }
     - { type: lever, token: cred }
+    - { type: lever, token: Sprinto }
+    - { type: lever, token: hevodata }
+    - { type: lever, token: acceldata }
+    - { type: lever, token: stable-money1 }
+    - { type: lever, token: mindtickle }
+    - { type: lever, token: smart-working-solutions }
+    - { type: lever, token: weekdayworks }
+    - { type: ashby, token: "flagright.com" }
+    - { type: ashby, token: bespokelabs }
+    - { type: ashby, token: oneapp }
+    - { type: ashby, token: josys }
+    - { type: ashby, token: broccoli }
+    - { type: ashby, token: pebl }
+    - { type: ashby, token: lambda }
+    - { type: smartrecruiters, token: Freshworks }
+    - { type: smartrecruiters, token: ph7 }
+    - { type: smartrecruiters, token: T-SystemsICTIndiaPvtLtd1 }
+    - { type: workable, token: apna }
+    - { type: workable, token: astrome-technologies }
+    - { type: workable, token: blue-machines-ai }
+    - { type: workable, token: maxwellenergy }
 
 rate_limits:
   # Per-source concurrent request cap + backoff used by server/src/util/fetchJson.js.
