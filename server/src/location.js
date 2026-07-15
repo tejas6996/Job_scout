@@ -78,6 +78,24 @@ export function allCanonicalLocations() {
   return Object.keys(cfg.locations.canonical);
 }
 
+// Hard filter — a job whose canonical location isn't in config's
+// locations.scope is dropped entirely (see pipeline.js). An empty/omitted
+// scope means unrestricted (anything canonicalizeLocation can resolve).
+export function isInScope(key) {
+  const cfg = loadConfig();
+  const scope = cfg.locations.scope;
+  if (!scope || !scope.length) return true;
+  return scope.includes(key);
+}
+
+// The locations actually filterable right now (respects scope) — what the
+// UI's location dropdown and /api/meta should offer.
+export function scopedLocations() {
+  const cfg = loadConfig();
+  const scope = cfg.locations.scope;
+  return scope && scope.length ? scope : allCanonicalLocations();
+}
+
 // Test/internal helper to reset the memoized alias index after swapping config.
 export function __resetLocationIndexForTests() {
   aliasIndex = null;

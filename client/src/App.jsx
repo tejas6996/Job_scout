@@ -118,11 +118,11 @@ export default function App() {
       <main className="mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
         <section className="mb-6">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Find your first role in India, faster.
+            Find your first role in Bengaluru, faster.
           </h2>
           <p className="mt-1.5 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
-            Curated internships, trainee programs and entry-level jobs (0–2 years) across Bengaluru,
-            Hyderabad, Remote-India and more — filtered to skip senior-only postings.
+            Curated internships, trainee programs and entry-level jobs (0–2 years) in Bengaluru —
+            filtered to skip senior-only and out-of-region postings.
           </p>
         </section>
 
@@ -154,7 +154,7 @@ export default function App() {
       </main>
 
       <footer className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
-        JobScout · India-only, freshers-only · aggregated from Adzuna, JSearch, company boards &amp; more
+        JobScout · Bengaluru-only, freshers-only · aggregated from Adzuna, JSearch, company boards &amp; more
       </footer>
     </div>
   );

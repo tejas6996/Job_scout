@@ -12,7 +12,7 @@ export default function Header({ theme, onToggleTheme, onRefresh, refreshing }) 
           </span>
           <div className="leading-tight">
             <h1 className="text-[15px] font-semibold tracking-tight">JobScout</h1>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Entry-level jobs for freshers in India</p>
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Entry-level jobs for freshers in Bengaluru</p>
           </div>
         </div>
 

@@ -1,14 +1,16 @@
 import express from 'express';
 import { getPool } from '../pool.js';
 import { PROVIDER_NAMES } from '../sources/index.js';
-import { allCanonicalLocations, canonicalLabel } from '../location.js';
+import { scopedLocations, canonicalLabel } from '../location.js';
 
 const router = express.Router();
 
 const VALID_SOURCES = new Set(PROVIDER_NAMES);
 const VALID_SORTS = new Set(['recent', 'relevant', 'deadline']);
 const VALID_ROLE_TYPES = new Set(['all', 'internship', 'apprenticeship', 'trainee', 'full_time_entry']);
-const VALID_LOCATIONS = new Set(['all', ...allCanonicalLocations()]);
+// Respects config/india.yaml's locations.scope — e.g. just ['bengaluru']
+// when the dashboard is scoped to one region, not every canonical location.
+const VALID_LOCATIONS = new Set(['all', ...scopedLocations()]);
 
 // GET /api/jobs — filtered, sorted, paginated fresher-friendly jobs.
 router.get('/jobs', async (req, res) => {
@@ -86,7 +88,7 @@ router.get('/meta', async (req, res) => {
       totalKept: pool.jobs.length,
       sources: pool.meta,
       updatedAt: pool.updatedAt,
-      locations: allCanonicalLocations().map((key) => ({ key, label: canonicalLabel(key) })),
+      locations: scopedLocations().map((key) => ({ key, label: canonicalLabel(key) })),
     });
   } catch (err) {
     res.status(502).json({ error: 'Sources unavailable', sources: [] });

@@ -21,9 +21,17 @@ locations:
     remote_india: ["remote india", "remote - india", "remote-india", "pan india remote"]
     hybrid: [hybrid]
 
-  # Cities boosted in fit scoring (server/src/scoring.js). Order doesn't
-  # matter — all listed cities get an equal boost, unlisted ones don't.
-  priority: [bengaluru, hyderabad, remote_india]
+  # Hard filter: a job whose canonical location isn't in this list is
+  # dropped entirely (server/src/pipeline.js), regardless of source. Empty
+  # or omitted = no restriction (any canonical location from the table
+  # above is allowed). This is what actually scopes the dashboard to a
+  # region — `priority` below only affects ranking among what's allowed.
+  scope: [bengaluru]
+
+  # Cities boosted in fit scoring (server/src/scoring.js), among whatever
+  # `scope` allows through. Order doesn't matter — all listed cities get an
+  # equal boost, unlisted ones don't.
+  priority: [bengaluru]
 
 roles:
   # Stage A treats a posting as in-scope only if the title/description hits

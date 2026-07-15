@@ -3,22 +3,12 @@ import { SearchIcon } from './icons.jsx';
 const SELECT_CLASS =
   'h-9 rounded-lg border border-zinc-200 bg-white px-2.5 text-sm text-zinc-700 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200';
 
-const LOCATION_OPTIONS = [
-  ['all', 'All locations'],
-  ['bengaluru', 'Bengaluru'],
-  ['hyderabad', 'Hyderabad'],
-  ['remote_india', 'Remote – India'],
-  ['gurugram', 'Gurugram'],
-  ['delhi_ncr', 'Delhi NCR'],
-  ['mumbai', 'Mumbai'],
-  ['pune', 'Pune'],
-  ['chennai', 'Chennai'],
-  ['noida', 'Noida'],
-  ['kolkata', 'Kolkata'],
-  ['ahmedabad', 'Ahmedabad'],
-  ['coimbatore', 'Coimbatore'],
-  ['hybrid', 'Hybrid'],
-];
+// No location dropdown right now: config/india.yaml's locations.scope is
+// currently just [bengaluru], so every result already is Bengaluru — a
+// selector with one meaningful option isn't worth showing. If scope is
+// widened later (server/src/location.js -> scopedLocations()), reintroduce
+// a Select here fed from GET /api/meta's `locations` field instead of a
+// hardcoded list, so it can't drift out of sync with the server's scope.
 
 const SOURCE_OPTIONS = [
   ['', 'All sources'],
@@ -45,12 +35,6 @@ export default function Controls({ filters, onChange, onReset, hasActiveFilters 
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <Select
-          label="Location"
-          value={filters.location}
-          onChange={(v) => onChange('location', v)}
-          options={LOCATION_OPTIONS}
-        />
         <Select
           label="Role type"
           value={filters.level}

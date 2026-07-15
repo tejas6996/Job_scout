@@ -3,7 +3,7 @@
 // (server/src/sources/index.js, fed from real providers) and --dry-run /
 // tests (fed from tests/fixtures/*.json) so there is exactly one code path
 // for "what does a raw job go through," never two that can drift apart.
-import { canonicalizeLocation } from './location.js';
+import { canonicalizeLocation, isInScope } from './location.js';
 import { parseCompensation } from './compensation.js';
 import { extractApplyDeadline } from './deadline.js';
 import { dedupeJobs } from './dedupe.js';
@@ -26,7 +26,7 @@ function isFresh(postedAt, maxAgeDays) {
 export async function runPipeline(rawJobs, cfg, opts = {}) {
   const withLocation = rawJobs
     .map((job) => ({ ...job, locationCanonical: canonicalizeLocation(job.location) }))
-    .filter((job) => job.locationCanonical !== null);
+    .filter((job) => job.locationCanonical !== null && isInScope(job.locationCanonical));
 
   const fresh = withLocation.filter((job) => isFresh(job.postedAt, cfg.freshness.max_age_days));
   const deduped = dedupeJobs(fresh);
