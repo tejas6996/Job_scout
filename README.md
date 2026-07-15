@@ -134,7 +134,16 @@ From `server/`:
 
 ---
 
-## 🎯 How the fresher filter works
+## 🎯 The two gates: experience and role
+
+A job survives the pipeline only if it passes **both** of two entirely independent gates,
+combined with AND. Neither gate knows the other exists — they're evaluated in parallel per job
+(`server/src/pipeline.js`) and each logs its own verdict separately. A "Senior Data Scientist" is
+a perfect role-gate match that the experience gate rejects; a "Junior HR Executive" is a perfect
+experience-gate match that the role gate rejects. Both fail overall, for different, independently
+auditable reasons.
+
+### Experience gate — is this fresher-level?
 
 `server/src/filters/` implements a two-stage classifier:
 
@@ -150,9 +159,54 @@ From `server/`:
    `max_years`, `role_type`, `confidence`, `reason`. Without a key configured, or on any
    parse/network failure, the job is **excluded** rather than guessed at.
 
-Every excluded job (from either stage) is logged with its reason to `server/logs/excluded-<date>.jsonl`
-so you can audit false negatives. Every run's funnel (fetched → after India/freshness filter →
-deduped → excluded → kept) is logged to `server/logs/funnel-<date>.jsonl`.
+### Role gate — is this a data/analytics/AI-ML/data-engineering role?
+
+`server/src/filters/roleTier12.js` + `roleTier3.js`, driven entirely by **`config/roles.yaml`**
+(never hardcoded titles), in three tiers:
+
+1. **Tier 1 — canonical/alias match.** The title is normalized (location suffixes, "Immediate
+   Joiner"-style recruiter junk, seniority Roman numerals, `@ Company` tags and punctuation
+   stripped) and checked against every family's `canonical` name + `aliases` in `roles.yaml`. A
+   `tier: core` family with no `requires_data_signal` is accepted outright.
+2. **Tier 2 — guarded keyword match.** Families marked `requires_data_signal: true`
+   (`data_product`, `adjacent_tech`) need the *description* to also contain one of
+   `data_signal_keywords` — a title match alone isn't enough. This is what keeps a generic
+   "Junior Software Engineer" building a mobile app out, while letting one whose JD mentions SQL
+   and ETL pipelines through as `adjacent`.
+3. **Tier 3 — LLM classifier**, for whatever Tier 1/2 leaves genuinely ambiguous: bundled titles
+   (`"Data & BI Analyst - Trainee"` — the `&`/`/` is a deliberate signal to stop guessing which
+   half applies and ask instead), novel phrasings, vague ones (`"Analytics Trainee"`). Before
+   paying for that LLM call, a title with **zero** data/analytics/ML/BI-ish token
+   (`title_prefilter_tokens` in `roles.yaml`) is default-denied immediately — no signal at all
+   means no LLM call either.
+
+**Exclusion always wins.** `exclude_titles` (lookalikes like "Business Development Analyst", "SOC
+Security Analyst", "HR Analyst" — titles that sound data-ish but aren't) is checked first, before
+any family match is even attempted, bundled title or not.
+
+**Ambiguity policy, same bias as the experience gate:** if Tier 3 can't confidently place a role,
+or has no key configured, it's excluded rather than guessed at. Precision over recall throughout.
+
+### Adding or removing a role family or alias
+
+Edit `config/roles.yaml` only — no code change:
+- New alias for an existing family → add it to that family's `aliases` list.
+- New family → add a block under `families:` with `canonical`, `aliases`, `tier`
+  (`core`/`adjacent`), and `requires_data_signal` if it's broad enough to need a JD-level guard.
+- A lookalike title slipping through → add it to `exclude_titles`.
+- Flip an excluded title back on → remove it from `exclude_titles` (it'll then need a real family
+  match to be included, same as anything else).
+- Change which families get the scoring boost → edit `priority_families`.
+
+### Auditing
+
+Every excluded job (from either gate, at any stage/tier) is logged with its reason to
+`server/logs/excluded-<date>.jsonl`, tagged `"gate": "experience"` or `"gate": "role"` — a job
+failing both gates produces two separate log lines, never one merged verdict. Every run's funnel
+— `fetched → afterLocationFilter → afterFreshness → afterDedupe → afterRoleGate` /
+`afterExperienceGate` (each computed independently against the same deduped set, so you can see
+which gate is doing the filtering) `→ kept` — is logged to `server/logs/funnel-<date>.jsonl` and
+printed by `npm run dry-run`.
 
 ---
 
