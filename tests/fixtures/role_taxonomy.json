@@ -1,0 +1,112 @@
+[
+  {
+    "id": "rt-01", "source": "test", "title": "Junior Data Analyst", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt1", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years of experience required. Work with SQL, Excel and build dashboards for stakeholders.",
+    "compensationText": "",
+    "expectedRole": { "decision": "include", "family": "data_analytics", "tier": "core" },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-02", "source": "test", "title": "Senior Data Scientist", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt2", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "5+ years of experience in machine learning and deep learning required.",
+    "compensationText": "",
+    "expectedRole": { "decision": "include", "family": "data_science_ml", "tier": "core" },
+    "expectedExperience": { "decision": "exclude" }
+  },
+  {
+    "id": "rt-03", "source": "test", "title": "Junior Python Developer", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt3", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years experience. Build ETL pipelines in Python, write SQL queries against our data warehouse.",
+    "compensationText": "",
+    "expectedRole": { "decision": "include", "family": "adjacent_tech", "tier": "adjacent", "has_data_signal": true },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-04", "source": "test", "title": "Junior Software Engineer", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt4", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years experience. Build our mobile app using Swift and Kotlin, ship features to the App Store.",
+    "compensationText": "",
+    "expectedRole": { "decision": "exclude", "family": "adjacent_tech", "tier": "adjacent", "has_data_signal": false },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-05", "source": "test", "title": "Business Development Analyst", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt5", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years experience. Identify new business opportunities and partnerships.",
+    "compensationText": "",
+    "expectedRole": { "decision": "exclude", "family": null, "tier": null },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-06", "source": "test", "title": "SOC Security Analyst", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt6", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years experience. Monitor security alerts in our SOC and respond to incidents.",
+    "compensationText": "",
+    "expectedRole": { "decision": "exclude", "family": null, "tier": null },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-07", "source": "test", "title": "MIS Executive", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt7", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-1 years experience. Prepare MIS reports and dashboards in Excel for management review.",
+    "compensationText": "",
+    "expectedRole": { "decision": "include", "family": "business_reporting", "tier": "core" },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-08", "source": "test", "title": "GET - Data", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt8", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Graduate Engineer Trainee program focused on data analytics and reporting. No prior experience required.",
+    "compensationText": "",
+    "expectedRole": { "decision": "undecided" },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-09", "source": "test", "title": "Data & BI Analyst - Trainee", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt9", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Trainee program combining data analysis and business intelligence reporting. No prior experience required.",
+    "compensationText": "",
+    "expectedRole": { "decision": "undecided" },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-10", "source": "test", "title": "Business Analyst / Sales Analyst", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt10", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-2 years experience. Split role covering business analysis and sales pipeline reporting.",
+    "compensationText": "",
+    "expectedRole": { "decision": "exclude", "family": null, "tier": null, "excludedBy": "sales analyst" },
+    "expectedExperience": { "decision": "include" }
+  },
+  {
+    "id": "rt-11", "source": "test", "title": "Junior HR Executive", "company": "Corp",
+    "companyLogo": null, "url": "https://example.com/rt11", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-14T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "0-1 years experience. Handle onboarding, employee relations and HR documentation.",
+    "compensationText": "",
+    "expectedRole": { "decision": "exclude", "family": null, "tier": null },
+    "expectedExperience": { "decision": "include" }
+  }
+]
