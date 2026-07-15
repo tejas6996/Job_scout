@@ -22,7 +22,8 @@ async function main() {
 
   const { jobs, funnel } = await runPipeline(rawJobs, cfg);
 
-  console.log('\n[dry-run] funnel:');
+  console.log('\n[dry-run] funnel (role gate and experience gate shown independently — each');
+  console.log('  is computed against the full deduped set, not off the other\'s leftovers):');
   console.table(funnel);
 
   const byRoleType = {};
@@ -30,8 +31,16 @@ async function main() {
     const key = job.fresher.role_type || 'unknown';
     byRoleType[key] = (byRoleType[key] || 0) + 1;
   }
-  console.log('\n[dry-run] kept jobs by role type:');
+  console.log('\n[dry-run] kept jobs by experience-gate role type:');
   console.table(byRoleType);
+
+  const byFamily = {};
+  for (const job of jobs) {
+    const key = job.role.family || 'unknown';
+    byFamily[key] = (byFamily[key] || 0) + 1;
+  }
+  console.log('\n[dry-run] kept jobs by role-taxonomy family:');
+  console.table(byFamily);
 
   console.log(`\n[dry-run] top ${Math.min(5, jobs.length)} by fit score:`);
   const top = jobs.slice().sort((a, b) => b.fitScore - a.fitScore).slice(0, 5);

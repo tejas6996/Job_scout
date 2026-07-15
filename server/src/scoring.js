@@ -17,6 +17,12 @@ const WEIGHTS = {
   compensationDisclosed: 10,
   recency: 15,
   deadlineUrgency: 10,
+  // Role-taxonomy fit (config/roles.yaml) — additive, everything above is
+  // unchanged. A job only reaches scoring at all if it already passed the
+  // role gate (server/src/filters/roleTier12.js / roleTier3.js), so this is
+  // about ranking among already-eligible roles, not a second filter.
+  roleFit: 20,
+  roleFitPriorityBoost: 10,
 };
 
 function skillOverlapScore(job, keywords) {
@@ -49,6 +55,17 @@ function compensationScore(job) {
   return job.compensation?.compensation_disclosed ? WEIGHTS.compensationDisclosed : 0;
 }
 
+const ROLE_TIER_FACTOR = { core: 1, adjacent: 0.5 };
+
+function roleFitScore(job, cfg) {
+  const role = job.role;
+  if (!role?.eligible || !role.tier) return 0;
+  const factor = ROLE_TIER_FACTOR[role.tier] ?? 0.5;
+  const priorityFamilies = cfg.roleTaxonomy?.priority_families || [];
+  const priorityBoost = priorityFamilies.includes(role.family) ? WEIGHTS.roleFitPriorityBoost : 0;
+  return factor * WEIGHTS.roleFit + priorityBoost;
+}
+
 function recencyScore(job, maxAgeDays) {
   const postedMs = Date.parse(job.postedAt);
   if (!Number.isFinite(postedMs)) return 0;
@@ -74,6 +91,7 @@ export function scoreJob(job, cfg) {
     roleTypeScore(job) +
     compensationScore(job) +
     recencyScore(job, cfg.freshness.max_age_days) +
-    deadlineUrgencyScore(job);
+    deadlineUrgencyScore(job) +
+    roleFitScore(job, cfg);
   return Math.round(total);
 }

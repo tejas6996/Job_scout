@@ -7,7 +7,7 @@ import { canonicalizeLocation, isInScope } from './location.js';
 import { parseCompensation } from './compensation.js';
 import { extractApplyDeadline } from './deadline.js';
 import { dedupeJobs } from './dedupe.js';
-import { classifyFresher } from './filters/index.js';
+import { classifyFresher, classifyRole } from './filters/index.js';
 import { scoreJob } from './scoring.js';
 import { logFunnel, logExcluded } from './logging.js';
 import { excerpt } from './util/html.js';
@@ -37,21 +37,35 @@ export async function runPipeline(rawJobs, cfg, opts = {}) {
     applyBy: extractApplyDeadline(job.descriptionText),
   }));
 
+  // Experience gate and role gate are independent — evaluated in parallel
+  // per job, never chained, never sharing state. A job is kept only if
+  // BOTH say eligible (AND, composed here — neither gate's internals know
+  // the other exists). See server/src/filters/roleTier12.js's header for
+  // why they must stay separate functions.
   const classified = await mapConcurrent(
     enriched,
     cfg.rate_limits.max_concurrent_per_source,
-    async (job) => ({ ...job, fresher: await classifyFresher(job, cfg) }),
+    async (job) => {
+      const [fresher, role] = await Promise.all([classifyFresher(job, cfg), classifyRole(job, cfg)]);
+      return { ...job, fresher, role };
+    },
   );
 
   const kept = [];
-  let excludedCount = 0;
+  let excludedByExperience = 0;
+  let excludedByRole = 0;
   for (const job of classified) {
-    if (job.fresher.eligible) {
-      kept.push(job);
-    } else {
-      excludedCount += 1;
-      if (!opts.silent) logExcluded(job, job.fresher);
+    // Each gate's rejection is logged independently — a job failing both
+    // produces two log lines, not one merged verdict.
+    if (!job.fresher.eligible) {
+      excludedByExperience += 1;
+      if (!opts.silent) logExcluded(job, job.fresher, 'experience');
     }
+    if (!job.role.eligible) {
+      excludedByRole += 1;
+      if (!opts.silent) logExcluded(job, job.role, 'role');
+    }
+    if (job.fresher.eligible && job.role.eligible) kept.push(job);
   }
 
   const jobs = kept.map((job) => ({
@@ -72,16 +86,24 @@ export async function runPipeline(rawJobs, cfg, opts = {}) {
     compensation: job.compensation,
     excerpt: excerpt(job.descriptionText, 220),
     fresher: job.fresher,
+    role: job.role,
     duplicateCount: job.duplicate_count || 1,
     fitScore: scoreJob(job, cfg),
   }));
 
+  // afterRoleGate / afterExperienceGate are each computed against the full
+  // deduped set independently (not sequentially, not off each other's
+  // leftovers) — this is what shows you which gate is doing the filtering,
+  // per the --dry-run funnel output (npm run dry-run from server/).
   const funnel = {
     fetched: rawJobs.length,
     afterLocationFilter: withLocation.length,
     afterFreshness: fresh.length,
     afterDedupe: deduped.length,
-    excluded: excludedCount,
+    afterRoleGate: classified.filter((j) => j.role.eligible).length,
+    afterExperienceGate: classified.filter((j) => j.fresher.eligible).length,
+    excludedByRole,
+    excludedByExperience,
     kept: jobs.length,
   };
 

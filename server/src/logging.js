@@ -30,8 +30,12 @@ export function logFunnel(funnel) {
   appendLine(todayFile('funnel'), entry);
 }
 
-// job: the raw/normalized job; verdict: { reason, stage, confidence, ... }
-export function logExcluded(job, verdict) {
+// job: the raw/normalized job; verdict: { reason, stage, confidence, ... };
+// gate: 'experience' | 'role' — which independent gate produced this
+// verdict. A job failing both gates gets two separate log lines (one per
+// gate), never one merged line — the two decisions are logged as
+// independently as they're made (see pipeline.js).
+export function logExcluded(job, verdict, gate) {
   appendLine(todayFile('excluded'), {
     ts: new Date().toISOString(),
     id: job.id,
@@ -39,6 +43,7 @@ export function logExcluded(job, verdict) {
     title: job.title,
     company: job.company,
     location: job.location,
+    gate,
     stage: verdict.stage,
     reason: verdict.reason,
     confidence: verdict.confidence,
