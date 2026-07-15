@@ -1,0 +1,223 @@
+# Role taxonomy — the second, independent gate a job must pass (alongside
+# the experience gate in config/india.yaml + server/src/filters/stageA.js,
+# which this file has no relationship to and never overrides). A job is
+# kept only if BOTH gates say yes; see server/src/filters/roleTier12.js /
+# roleTier3.js for the matcher and README.md's "Two gates" section for how
+# they compose.
+#
+# tier: core = target roles. adjacent = acceptable ONLY with a data signal
+# in the JD (requires_data_signal: true forces that check).
+
+families:
+  data_analytics:
+    tier: core
+    canonical: Data Analyst
+    aliases:
+      - junior data analyst
+      - associate data analyst
+      - data analyst trainee
+      - healthcare data analyst
+      - data research associate
+      - research analyst
+      - junior research analyst
+      - junior statistician
+      - decision scientist
+      - decision science associate
+      - analytics associate
+
+  business_reporting:
+    tier: core
+    canonical: Business Analyst
+    aliases:
+      - junior business analyst
+      - associate business analyst
+      - business intelligence analyst
+      - bi analyst
+      - junior bi analyst
+      - bi analyst trainee
+      - reporting analyst
+      - junior reporting analyst
+      - insights analyst
+      - junior insights analyst
+      - mis executive
+      - mis analyst
+      - analytics consultant
+      - junior analytics consultant
+      - product analyst
+      - junior product analyst
+      - marketing analyst
+      - junior marketing analyst
+      - operations analyst
+      - junior operations analyst
+      - financial analyst
+      - junior financial analyst
+      - growth analyst
+
+  risk_quant:
+    tier: core
+    canonical: Risk Analyst
+    aliases:
+      - junior risk analyst
+      - credit risk analyst
+      - fraud analyst
+      - quantitative analyst
+      - junior quantitative analyst
+
+  data_science_ml:
+    tier: core
+    canonical: Data Scientist
+    aliases:
+      - junior data scientist
+      - associate data scientist
+      - data science trainee
+      - machine learning engineer
+      - junior machine learning engineer
+      - associate ml engineer
+      - ml engineer
+      - ai engineer
+      - junior ai engineer
+      - ai/ml trainee
+      - applied scientist
+      - junior applied scientist
+      - nlp engineer
+      - junior nlp engineer
+      - computer vision engineer
+      - junior computer vision engineer
+      - ai research associate
+      - prompt engineer
+
+  data_engineering:
+    tier: core
+    canonical: Data Engineer
+    aliases:
+      - junior data engineer
+      - associate data engineer
+      - analytics engineer
+      - junior analytics engineer
+      - etl developer
+      - junior etl developer
+      - database administrator
+      - dba
+      - junior dba
+      - data warehouse engineer
+      - data warehouse developer
+      - junior data warehouse developer
+
+  bi_visualization_dev:
+    tier: core
+    canonical: BI Developer
+    aliases:
+      - junior bi developer
+      - tableau developer
+      - junior tableau developer
+      - power bi developer
+      - junior power bi developer
+      - dashboard developer
+      - reporting developer
+      - visualization developer
+
+  data_ops_quality_governance:
+    tier: core
+    canonical: Data Quality Analyst
+    aliases:
+      - junior data quality analyst
+      - data governance analyst
+      - data governance associate
+      - data steward
+      - junior data steward
+      - data annotation associate
+      - data labeler
+      - data operations associate
+      - data management executive
+
+  data_product:
+    tier: core
+    requires_data_signal: true # "APM"/"PM trainee" is broad; require data context
+    canonical: Data Product Manager
+    aliases:
+      - associate product manager
+      - apm
+      - pm trainee
+      - product manager trainee
+      - junior data consultant
+      - data consultant
+
+  adjacent_tech:
+    tier: adjacent
+    requires_data_signal: true # too broad without proof of data work
+    canonical: Junior Software Engineer (Data/Backend)
+    aliases:
+      - junior software engineer
+      - software engineer trainee
+      - junior python developer
+      - python developer
+      - junior sql developer
+      - sql developer
+      - automation engineer
+      - junior qa analyst
+      - qa analyst
+      - technical support analyst
+
+# A JD "has a data signal" if it mentions any of these (case-insensitive,
+# word-bounded matching applied in code — this list is just the raw terms).
+data_signal_keywords:
+  - sql
+  - python
+  - etl
+  - elt
+  - data pipeline
+  - data warehouse
+  - dbt
+  - tableau
+  - power bi
+  - looker
+  - qlik
+  - spark
+  - hadoop
+  - airflow
+  - snowflake
+  - redshift
+  - bigquery
+  - analytics
+  - data modeling
+  - pandas
+  - numpy
+  - scikit
+  - machine learning
+  - ml
+  - statistics
+  - dashboard
+  - reporting
+  - kpi
+  - data quality
+  - data governance
+  - warehouse
+
+# Titles that LOOK like they match but are NOT data roles — reject by
+# default. Exclusion always wins over a family match (see roleTier12.js).
+# Keep configurable so a specific one can be flipped back on.
+exclude_titles:
+  - business development analyst
+  - sales analyst
+  - gis analyst
+  - hr analyst
+  - people analyst
+  - investment banking analyst
+  - equity research analyst
+  - security analyst
+  - soc analyst
+  - lab analyst
+  - chemical analyst
+  - financial planning analyst
+
+# Families boosted in fit scoring (server/src/scoring.js), on top of the
+# core/adjacent weighting every family already gets. Order doesn't matter.
+priority_families: [data_analytics, business_reporting, data_science_ml]
+
+# The cheap pre-filter before Tier 3 (server/src/filters/roleTier3.js, an
+# LLM call): a title with none of these tokens is default-denied without
+# ever reaching the LLM. Spec named data/analytics/ML/BI explicitly; "ai" is
+# added for consistency with data_science_ml already covering AI roles
+# (ai engineer, ai research associate, ...) via Tier 1 aliases — flagged as
+# a deliberate small addition, not a literal reading of the brief.
+title_prefilter_tokens: [data, analytics, ml, ai, bi]
