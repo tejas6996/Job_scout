@@ -45,7 +45,7 @@ what's left in a clean, fast, distraction-free UI.
 | Frontend  | React 18 + Vite 6 + Tailwind CSS 3                  |
 | Backend   | Node.js (18+) + Express 4                           |
 | Security  | helmet, express-rate-limit, CORS allow-list        |
-| Sources   | Jobicy, Remotive (free/keyless), Adzuna, JSearch (need a key), Greenhouse/Lever company boards (free/keyless) |
+| Sources   | Jobicy, Remotive (free/keyless), Adzuna, JSearch (need a key), 24 company boards on Greenhouse/Lever/Ashby/SmartRecruiters/Workable (all free/keyless) |
 | Config    | `config/india.yaml` — locations, keywords, thresholds, source toggles |
 
 This is an **npm workspaces monorepo** — one install command sets up everything.
@@ -110,9 +110,10 @@ Then open **http://localhost:5173** in your browser.
 > The dashboard (Vite, port 5173) proxies `/api` requests to the backend (Express, port 8787), so
 > you only ever load one origin in the browser.
 
-Out of the box (no API keys) you'll get Jobicy/Remotive (global-remote, filtered to "Remote –
-India") and the seeded Greenhouse/Lever company boards. For real Indian city listings, add the
-Adzuna and JSearch keys — see **Configuration** below.
+Out of the box (no API keys) you'll get Jobicy/Remotive (global-remote, filtered down to
+Bengaluru postings — see **Locations** below) and the 24 seeded company boards across Greenhouse,
+Lever, Ashby, SmartRecruiters and Workable. For real Indian city listings, add the Adzuna and
+JSearch keys — see **Configuration** below.
 
 ### Available scripts (run from the repo root)
 
@@ -158,9 +159,12 @@ deduped → excluded → kept) is logged to `server/logs/funnel-<date>.jsonl`.
 ## 🇮🇳 Locations
 
 `server/src/location.js` canonicalizes free-text locations against the alias table in
-`config/india.yaml`. A posting that doesn't resolve to a known India location (or "Remote –
-India"/"Hybrid") is dropped — this is what keeps global-remote sources like Jobicy/Remotive
-India-only. Add a new city or alias by editing `config/india.yaml`, not code.
+`config/india.yaml` (Bengaluru/Bangalore/Blr all resolve to one canonical key, etc.). On top of
+that, `locations.scope` is a **hard filter** — currently `[bengaluru]`, so this dashboard only
+ever surfaces Bengaluru postings, regardless of source. A posting that doesn't canonicalize to
+something in `scope` is dropped before it ever reaches the fresher filter. To widen the dashboard
+to more cities, add them to `locations.scope` in `config/india.yaml` — no code change needed. An
+empty/omitted `scope` means unrestricted (any canonical India location is allowed).
 
 ---
 
@@ -206,7 +210,15 @@ gracefully). Without `GEMINI_API_KEY`, Stage-B-eligible jobs are excluded rather
 
 ## ➕ Adding a new source
 
-Every source is an adapter behind a shared interface (`server/src/sources/provider.js`):
+**Adding a company already on Greenhouse, Lever, Ashby, SmartRecruiters or Workable** needs no
+code at all — add `{ type: <platform>, token: <company-slug> }` to `ats_companies` in
+`config/india.yaml` (see `server/src/sources/atsBoards.js` for what each platform's token/slug
+looks like). Verify the slug live first (`curl` the platform's API — e.g.
+`https://api.ashbyhq.com/posting-api/job-board/<slug>` — and check for a 200 with real postings)
+before adding it; a guessed slug just silently returns zero jobs.
+
+**Adding an entirely new platform/API** is a real adapter, behind the shared interface
+(`server/src/sources/provider.js`):
 
 1. Create `server/src/sources/yourSource.js` exporting `SOURCE_NAME` and `async fetchJobs(cfg)`
    that returns an array of jobs shaped per `RAW_JOB_SHAPE` in `provider.js` — pass each one
@@ -218,7 +230,11 @@ Everything downstream (location canonicalization, compensation parsing, dedupe, 
 filter, scoring) works automatically once a source conforms to the interface. Naukri, LinkedIn
 India, Indeed India, Wellfound India, Instahyre, Hirist, Foundit, Internshala and Unstop don't have
 public/free APIs — they're listed (disabled) in `config/india.yaml` as a starting point for a
-scraping-based adapter, but none is implemented yet. See [MIGRATION.md](MIGRATION.md).
+scraping-based adapter, but none is implemented yet (a deliberate choice — see
+[MIGRATION.md](MIGRATION.md) for the trade-offs). If a list endpoint doesn't include a
+free-text description (SmartRecruiters, Workable), don't reach for an N+1 per-posting detail
+fetch by default — check whether the list response has a structured experience/seniority field
+first and fold it into a synthetic description, the way `atsBoards.js` does for both.
 
 ---
 
