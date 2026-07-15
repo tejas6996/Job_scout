@@ -9,6 +9,7 @@ import { evaluateStageA } from './stageA.js';
 import { classifyWithLLM } from './stageB.js';
 import { evaluateRoleTier12 } from './roleTier12.js';
 import { classifyRoleWithLLM } from './roleTier3.js';
+import { withLLMCache, ttlForVerdict } from '../llmCache.js';
 
 export async function classifyFresher(job, cfg) {
   const stageA = evaluateStageA(job, cfg);
@@ -26,7 +27,11 @@ export async function classifyFresher(job, cfg) {
     };
   }
 
-  const stageB = await classifyWithLLM(job, cfg);
+  // Cached by job id: without this, every 15-min background refresh
+  // re-submits the same still-undecided job to Gemini, which is how a
+  // 20-req/min free-tier quota gets exhausted almost instantly (see
+  // llmCache.js).
+  const stageB = await withLLMCache(`stageB:${job.id}`, () => classifyWithLLM(job, cfg), ttlForVerdict);
   const confidenceBand = stageB.confidence >= 0.7 ? 'high' : stageB.confidence >= 0.4 ? 'medium' : 'low';
   return {
     eligible: stageB.is_fresher_eligible,
@@ -58,7 +63,7 @@ export async function classifyRole(job, cfg) {
     };
   }
 
-  const tier3 = await classifyRoleWithLLM(job, cfg);
+  const tier3 = await withLLMCache(`tier3:${job.id}`, () => classifyRoleWithLLM(job, cfg), ttlForVerdict);
   const confidenceBand = tier3.confidence >= 0.7 ? 'high' : tier3.confidence >= 0.4 ? 'medium' : 'low';
   return {
     eligible: tier3.in_taxonomy,
