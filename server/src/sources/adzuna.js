@@ -6,6 +6,7 @@
 import { normalizeProviderJob } from './provider.js';
 import { canonicalLabel } from '../location.js';
 import { withRetry } from '../util/fetchJson.js';
+import { buildRoleQuery } from './roleQuery.js';
 
 export const SOURCE_NAME = 'adzuna';
 
@@ -28,7 +29,8 @@ export async function fetchJobs(cfg) {
   const appKey = process.env.ADZUNA_APP_KEY;
   if (!appId || !appKey) return [];
 
-  const roleQuery = (cfg.roles.include_keywords || []).slice(0, 8).join(' ');
+  const roleQuery = buildRoleQuery(cfg);
+  const resultsPerPage = String(cfg.rate_limits?.results_per_source || 50);
   const priority = (cfg.locations.priority || []).filter((k) => CITY_LABELS[k]);
   const targets = priority.length ? priority.map((k) => CITY_LABELS[k]) : [undefined];
 
@@ -38,8 +40,9 @@ export async function fetchJobs(cfg) {
         app_id: appId,
         app_key: appKey,
         what_or: roleQuery,
+        title_only: '1', // match against the job title, not full text — matches the spec's "title reasonably matches" rule and cuts out postings that only mention a role term in the body
         max_days_old: String(cfg.freshness.max_age_days),
-        results_per_page: '50',
+        results_per_page: resultsPerPage,
         sort_by: 'date',
         'content-type': 'application/json',
       });

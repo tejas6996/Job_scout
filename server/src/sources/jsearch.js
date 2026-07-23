@@ -5,6 +5,8 @@
 // Docs: https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch
 import { normalizeProviderJob } from './provider.js';
 import { withRetry } from '../util/fetchJson.js';
+import { buildRoleQuery } from './roleQuery.js';
+import { pickBestApplyLink } from '../util/applyDomains.js';
 
 export const SOURCE_NAME = 'jsearch';
 
@@ -26,7 +28,7 @@ export async function fetchJobs(cfg) {
   const apiKey = process.env.JSEARCH_API_KEY;
   if (!apiKey) return [];
 
-  const roleQuery = (cfg.roles.include_keywords || []).slice(0, 3).join(' OR ');
+  const roleQuery = buildRoleQuery(cfg, { includeFresherQualifier: true });
   const priority = (cfg.locations.priority || []).filter((k) => CITY_LABELS[k]);
   const cities = priority.length ? priority.map((k) => CITY_LABELS[k]) : ['India'];
 
@@ -56,8 +58,18 @@ async function fetchJSearchPage(apiKey, params) {
   return res.json();
 }
 
+// JSearch often lists several places to apply for the same job (LinkedIn,
+// Naukri, Indeed, the employer's own career site) — apply_options[0] isn't
+// necessarily the best one, just whichever JSearch happened to list first.
+// We keep pulling from every source (that's the point of using JSearch at
+// all — it aggregates postings syndicated across job boards), but pick the
+// most direct link among the options rather than settling for the first
+// one; verifyApplyLink still re-checks the *final* resolved URL as a safety
+// net (server/src/verify/linkChecker.js), since even a "best pick" here can
+// still redirect somewhere unexpected.
 function normalize(j) {
-  const applyLink = j.apply_options?.[0]?.apply_link || j.job_apply_link;
+  const candidates = (j.apply_options || []).map((o) => o.apply_link);
+  const applyLink = pickBestApplyLink([...candidates, j.job_apply_link]);
   if (!j || !applyLink || !j.job_title) return null;
   const months = j.job_required_experience?.required_experience_in_months;
   const salaryText = j.job_min_salary && j.job_max_salary ? `${j.job_min_salary}-${j.job_max_salary}` : '';
