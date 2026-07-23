@@ -20,7 +20,7 @@ async function main() {
   console.log(`[dry-run] loaded ${rawJobs.length} fixture jobs from ${path.relative(process.cwd(), FIXTURES_PATH)}`);
   console.log('[dry-run] no live network calls will be made (providers are not invoked)');
 
-  const { jobs, funnel } = await runPipeline(rawJobs, cfg);
+  const { jobs, funnel } = await runPipeline(rawJobs, cfg, { skipVerification: true });
 
   console.log('\n[dry-run] funnel (role gate and experience gate shown independently — each');
   console.log('  is computed against the full deduped set, not off the other\'s leftovers):');
@@ -45,8 +45,13 @@ async function main() {
   console.log(`\n[dry-run] top ${Math.min(5, jobs.length)} by fit score:`);
   const top = jobs.slice().sort((a, b) => b.fitScore - a.fitScore).slice(0, 5);
   for (const job of top) {
-    console.log(`  [${job.fitScore}] ${job.title} @ ${job.company} (${job.locationCanonical}) — ${job.fresher.role_type}`);
+    console.log(`  [${job.fitScore}] ${job.title} @ ${job.company} (${job.locationCanonical}) — ${job.fresher.role_type} — status: ${job.status}${job.scamFlag ? ' — SCAM-FLAGGED' : ''}`);
   }
+
+  const byStatus = {};
+  for (const job of jobs) byStatus[job.status] = (byStatus[job.status] || 0) + 1;
+  console.log('\n[dry-run] kept jobs by status (verification/match-score enrichment ran with skipVerification: true, so `verified` is always false here — see server/tests/verify.test.js for that logic):');
+  console.table(byStatus);
 
   console.log(`\n[dry-run] see server/logs/ for the excluded-jobs audit log and funnel record.`);
 }

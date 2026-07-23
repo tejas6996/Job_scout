@@ -12,6 +12,7 @@ const DEFAULT_FILTERS = {
   level: 'all',
   location: 'all',
   source: '',
+  status: 'all',
   sort: 'relevant',
   remote: false,
 };
@@ -28,7 +29,7 @@ export default function App() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [debouncedQ, setDebouncedQ] = useState('');
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({ jobs: [], total: 0, pages: 1, sources: [], updatedAt: null });
+  const [data, setData] = useState({ jobs: [], total: 0, pages: 1, sources: [], updatedAt: null, unclearTotal: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [nonce, setNonce] = useState(0); // bump to force a refetch (Refresh button)
@@ -58,7 +59,7 @@ export default function App() {
   // ---- Reset to page 1 whenever a filter changes ----
   useEffect(() => {
     setPage(1);
-  }, [debouncedQ, filters.level, filters.location, filters.source, filters.sort, filters.remote]);
+  }, [debouncedQ, filters.level, filters.location, filters.source, filters.status, filters.sort, filters.remote]);
 
   // ---- Fetch jobs ----
   useEffect(() => {
@@ -72,6 +73,7 @@ export default function App() {
         level: filters.level,
         location: filters.location,
         source: filters.source,
+        status: filters.status,
         sort: filters.sort,
         remote: filters.remote ? 'true' : '',
         page,
@@ -91,7 +93,7 @@ export default function App() {
       });
 
     return () => controller.abort();
-  }, [debouncedQ, filters.level, filters.location, filters.source, filters.sort, filters.remote, page, nonce]);
+  }, [debouncedQ, filters.level, filters.location, filters.source, filters.status, filters.sort, filters.remote, page, nonce]);
 
   const updateFilter = useCallback((key, value) => {
     setFilters((f) => ({ ...f, [key]: value }));
@@ -135,9 +137,12 @@ export default function App() {
           />
           <StatsBar
             total={data.total}
+            unclearTotal={data.unclearTotal}
             sources={data.sources}
             updatedAt={data.updatedAt}
             loading={loading}
+            onReviewUnclear={() => updateFilter('status', filters.status === 'unclear' ? 'all' : 'unclear')}
+            reviewingUnclear={filters.status === 'unclear'}
           />
         </div>
 

@@ -16,7 +16,8 @@ const SOURCE_OPTIONS = [
   ['remotive', 'Remotive'],
   ['adzuna', 'Adzuna'],
   ['jsearch', 'JSearch'],
-  ['ats_boards', 'Company boards'],
+  ['ats_boards', 'Company boards (ATS)'],
+  ['company_pages', 'Company pages'],
 ];
 
 export default function Controls({ filters, onChange, onReset, hasActiveFilters }) {
@@ -52,6 +53,16 @@ export default function Controls({ filters, onChange, onReset, hasActiveFilters 
           value={filters.source}
           onChange={(v) => onChange('source', v)}
           options={SOURCE_OPTIONS}
+        />
+        <Select
+          label="Status"
+          value={filters.status}
+          onChange={(v) => onChange('status', v)}
+          options={[
+            ['all', 'All statuses'],
+            ['new', 'New'],
+            ['unclear', 'Unclear — needs review'],
+          ]}
         />
         <Select
           label="Sort"

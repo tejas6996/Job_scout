@@ -1,5 +1,5 @@
 import { relativeTime, initials, colorFromString, formatCompensation, formatDeadline } from '../lib/format.js';
-import { MapPinIcon, ClockIcon, ExternalLinkIcon } from './icons.jsx';
+import { MapPinIcon, ClockIcon, ExternalLinkIcon, ShieldCheckIcon, AlertTriangleIcon, ChevronDownIcon } from './icons.jsx';
 
 const ROLE_TYPE_BADGE = {
   internship: { label: 'Internship', className: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300' },
@@ -13,9 +13,20 @@ export default function JobCard({ job }) {
   const tags = (job.tags || []).filter(Boolean).slice(0, 3);
   const compensationLabel = formatCompensation(job.compensation);
   const deadlineLabel = formatDeadline(job.applyBy);
+  const hasAiMatch = job.matchScore != null || (job.keySkills || []).length > 0 || (job.resumeBullets || []).length > 0;
 
   return (
     <article className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-hover dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
+      {job.scamFlag && (
+        <div
+          className="mb-3 flex items-start gap-1.5 rounded-lg bg-rose-50 px-2.5 py-2 text-[12px] text-rose-700 dark:bg-rose-500/10 dark:text-rose-300"
+          title={job.scamReason || 'Flagged by AI screening — review carefully before applying.'}
+        >
+          <AlertTriangleIcon width={14} height={14} className="mt-0.5 shrink-0" />
+          <span>Review before applying{job.scamReason ? ` — ${job.scamReason}` : ''}</span>
+        </div>
+      )}
+
       <div className="flex items-start gap-3">
         <Logo job={job} />
         <div className="min-w-0 flex-1">
@@ -24,9 +35,19 @@ export default function JobCard({ job }) {
           </h3>
           <p className="truncate text-[13px] text-zinc-500 dark:text-zinc-400">{job.company}</p>
         </div>
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${badge.className}`}>
-          {badge.label}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${badge.className}`}>
+            {badge.label}
+          </span>
+          {job.status === 'unclear' && (
+            <span
+              className="rounded-full border border-zinc-300 px-2 py-0.5 text-[11px] font-medium text-zinc-500 dark:border-zinc-700 dark:text-zinc-400"
+              title="Our filters couldn't confidently classify this one — take a look yourself."
+            >
+              Unclear
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-zinc-500 dark:text-zinc-400">
@@ -77,8 +98,48 @@ export default function JobCard({ job }) {
         </div>
       )}
 
+      {hasAiMatch && (
+        <details className="group/match mt-3">
+          <summary className="flex cursor-pointer list-none items-center gap-1 text-[12px] font-medium text-indigo-600 dark:text-indigo-400">
+            <ChevronDownIcon width={13} height={13} className="transition group-open/match:rotate-180" />
+            AI match{job.matchScore != null ? ` — ${job.matchScore}/100` : ''}
+          </summary>
+          <div className="mt-2 space-y-2 rounded-lg bg-zinc-50 p-2.5 text-[12px] dark:bg-zinc-800/60">
+            {(job.keySkills || []).length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {job.keySkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded bg-indigo-50 px-1.5 py-0.5 text-[11px] font-medium text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
+            {(job.resumeBullets || []).length > 0 && (
+              <div>
+                <p className="mb-1 text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+                  Resume bullet drafts — review before use
+                </p>
+                <ul className="list-disc space-y-1 pl-4 text-zinc-600 dark:text-zinc-300">
+                  {job.resumeBullets.map((bullet, i) => (
+                    <li key={i}>{bullet}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </details>
+      )}
+
       <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800">
-        <span className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">{job.source}</span>
+        <span className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+          {job.source}
+          {job.verified && (
+            <ShieldCheckIcon width={13} height={13} className="text-emerald-500" title="Apply link verified reachable" />
+          )}
+        </span>
         <a
           href={job.url}
           target="_blank"

@@ -1,12 +1,27 @@
 import { relativeTime } from '../lib/format.js';
 
-export default function StatsBar({ total, sources, updatedAt, loading }) {
+export default function StatsBar({ total, unclearTotal, sources, updatedAt, loading, onReviewUnclear, reviewingUnclear }) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
       <span>
         <strong className="font-semibold text-zinc-700 dark:text-zinc-200">{loading ? '—' : total}</strong>{' '}
         fresher-friendly {total === 1 ? 'role' : 'roles'}
       </span>
+
+      {!loading && unclearTotal > 0 && (
+        <button
+          type="button"
+          onClick={onReviewUnclear}
+          aria-pressed={reviewingUnclear}
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium transition ${
+            reviewingUnclear
+              ? 'bg-amber-500 text-white'
+              : 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:hover:bg-amber-500/25'
+          }`}
+        >
+          {unclearTotal} unclear — needs review
+        </button>
+      )}
 
       {Array.isArray(sources) && sources.length > 0 && (
         <span className="flex items-center gap-2">

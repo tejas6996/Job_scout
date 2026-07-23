@@ -8,6 +8,7 @@ const router = express.Router();
 const VALID_SOURCES = new Set(PROVIDER_NAMES);
 const VALID_SORTS = new Set(['recent', 'relevant', 'deadline']);
 const VALID_ROLE_TYPES = new Set(['all', 'internship', 'apprenticeship', 'trainee', 'full_time_entry']);
+const VALID_STATUSES = new Set(['all', 'new', 'unclear']);
 // Respects config/india.yaml's locations.scope — e.g. just ['bengaluru']
 // when the dashboard is scoped to one region, not every canonical location.
 const VALID_LOCATIONS = new Set(['all', ...scopedLocations()]);
@@ -33,14 +34,20 @@ router.get('/jobs', async (req, res) => {
   const remote = req.query.remote === 'true' ? true : req.query.remote === 'false' ? false : null;
   const roleType = VALID_ROLE_TYPES.has(req.query.level) ? req.query.level : 'all';
   const location = VALID_LOCATIONS.has(req.query.location) ? req.query.location : 'all';
+  const status = VALID_STATUSES.has(req.query.status) ? req.query.status : 'all';
   const sort = VALID_SORTS.has(req.query.sort) ? req.query.sort : 'relevant';
   const page = clampInt(req.query.page, 1, 1, 1000);
   const limit = clampInt(req.query.limit, 24, 1, 60);
 
   // pool.jobs only ever contains fresher-eligible jobs — filtering already
   // happened in server/src/sources/index.js (Stage A/B classification).
+  // unclearTotal is computed against the full unfiltered pool (not `jobs`
+  // below, which the query/status filters narrow) so it's a stable "needs
+  // review" count regardless of whatever else the dashboard is filtered to.
+  const unclearTotal = pool.jobs.filter((j) => j.status === 'unclear').length;
   let jobs = pool.jobs;
 
+  if (status !== 'all') jobs = jobs.filter((j) => j.status === status);
   if (q) {
     jobs = jobs.filter((j) =>
       `${j.title} ${j.company} ${j.location} ${(j.tags || []).join(' ')}`.toLowerCase().includes(q),
@@ -76,6 +83,7 @@ router.get('/jobs', async (req, res) => {
     limit,
     sources: pool.meta,
     updatedAt: pool.updatedAt,
+    unclearTotal,
   });
 });
 
