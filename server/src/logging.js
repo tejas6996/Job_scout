@@ -49,3 +49,58 @@ export function logExcluded(job, verdict, gate) {
     confidence: verdict.confidence,
   });
 }
+
+// A job neither gate confidently excluded, but at least one gate couldn't
+// confidently include either (LLM stage unavailable/failed/low-confidence).
+// Per the spec's ambiguity policy this job is KEPT (status: 'unclear'), not
+// dropped — this just leaves an audit trail for why it's not a clean "New".
+export function logUnclear(job, fresherVerdict, roleVerdict) {
+  appendLine(todayFile('unclear'), {
+    ts: new Date().toISOString(),
+    id: job.id,
+    source: job.source,
+    title: job.title,
+    company: job.company,
+    location: job.location,
+    fresher: { stage: fresherVerdict.stage, verdict: fresherVerdict.verdict, reason: fresherVerdict.reason },
+    role: { stage: roleVerdict.stage, verdict: roleVerdict.verdict, reason: roleVerdict.reason },
+  });
+}
+
+// A job both gates confidently liked, but the match/scam classifier
+// (server/src/llm/matchScam.js) flagged as scam-shaped — this is what
+// forces its status from 'new' down to 'unclear' in pipeline.js, so this
+// audit line records why, separate from a gate-level unclear.
+export function logScamFlagged(job, matchScam) {
+  appendLine(todayFile('unclear'), {
+    ts: new Date().toISOString(),
+    id: job.id,
+    source: job.source,
+    title: job.title,
+    company: job.company,
+    location: job.location,
+    scamFlag: true,
+    scamReason: matchScam.scam_reason,
+  });
+}
+
+// A job that survived both gates but got dropped by the verification layer
+// itself (server/src/verify/linkChecker.js) — a confirmed third-party/
+// aggregator apply link, or the apply page's own text says the posting is
+// closed/expired. Unlike logUnclear, this is a genuine drop (excluded), so
+// it goes to the same excluded-*.jsonl audit file as the gate exclusions,
+// tagged with gate: 'verification' so it's easy to tell apart from a role
+// or experience gate rejection.
+export function logExcludedByVerification(job, reason) {
+  appendLine(todayFile('excluded'), {
+    ts: new Date().toISOString(),
+    id: job.id,
+    source: job.source,
+    title: job.title,
+    company: job.company,
+    location: job.location,
+    url: job.url,
+    gate: 'verification',
+    reason,
+  });
+}

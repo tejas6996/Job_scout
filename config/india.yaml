@@ -81,6 +81,15 @@ roles:
 
 experience:
   max_years: 2
+  # Hard filter (mirrors locations.scope below): only these role_type values
+  # pass the experience gate (server/src/filters/index.js), even if a
+  # posting is otherwise a confident 0-2yr match. Also narrows the
+  # fresher-qualifier terms server/src/sources/roleQuery.js appends to the
+  # JSearch fetch query, so the fetch itself is targeted at these role
+  # types, not just the downstream filter. Empty or omitted = no
+  # restriction (internship/apprenticeship/trainee/full_time_entry all
+  # eligible). Valid values: internship, apprenticeship, trainee, full_time_entry.
+  active_role_types: [internship, apprenticeship]
   # Phrases that count as a fresher-eligible role type regardless of a
   # missing/ambiguous years figure.
   fresher_role_signals:
@@ -101,7 +110,9 @@ experience:
     - junior
 
 freshness:
-  max_age_days: 21
+  # Postings older than this are dropped outright (server/src/pipeline.js).
+  # Tightened from 21->10 on request: only recent postings, nothing stale.
+  max_age_days: 10
 
 sources:
   # Toggle a provider on/off without touching code. Providers without a
@@ -114,6 +125,7 @@ sources:
   adzuna: true
   jsearch: true
   ats_boards: true
+  company_pages: true
   naukri: false
   internshala: false
   unstop: false
@@ -155,11 +167,32 @@ sources:
     - { type: workable, token: blue-machines-ai }
     - { type: workable, token: maxwellenergy }
 
+  # URLs for the company_pages provider (server/src/sources/companyPages.js)
+  # — each page is read for embedded schema.org JobPosting structured data
+  # (the same markup Google requires for Google for Jobs), NOT scraped raw
+  # HTML. This is for companies with a custom-built career page that isn't
+  # on one of the ATS platforms above. `company` is an optional override if
+  # the page's own hiringOrganization.name is missing or wrong.
+  #
+  # Empty by default — add a company here (one line, same pattern as
+  # ats_companies) only after confirming its career page actually publishes
+  # JobPosting JSON-LD (view-source and search for
+  # `application/ld+json` + `"@type":"JobPosting"`); a page without it
+  # silently contributes 0 postings, which isn't a bug, just no data to find.
+  company_page_urls: []
+
 rate_limits:
   # Per-source concurrent request cap + backoff used by server/src/util/fetchJson.js.
   max_concurrent_per_source: 3
   retry_attempts: 3
   retry_base_delay_ms: 1000
+  # Adzuna's results_per_page (no fixed total-request cap, safe to raise
+  # directly). JSearch has a fixed *total* request budget instead (see
+  # source_refresh_minutes.jsearch below) so its num_pages stays hardcoded
+  # at 1 in jsearch.js regardless of this value — raise this only after
+  # confirming with whoever owns the API keys, since it spends more quota
+  # per request.
+  results_per_source: 50
   # How often the server proactively re-polls sources in the background
   # (server/src/pool.js) and refreshes the in-memory job pool, independent
   # of whether anyone is currently loading the dashboard. This is the
@@ -177,6 +210,10 @@ rate_limits:
   # window even accounting for retries.
   source_refresh_minutes:
     jsearch: 480
+    # Company career pages have no quota to protect, but hitting someone
+    # else's site every 15 minutes is impolite for no real benefit — career
+    # pages don't change that often. Hourly is a reasonable default.
+    company_pages: 60
 
 llm:
   # Stage B classifier — only invoked when Stage A can't decide.

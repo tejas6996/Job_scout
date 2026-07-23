@@ -209,10 +209,33 @@ exclude_titles:
   - lab analyst
   - chemical analyst
   - financial planning analyst
+  # Bare "sales" — word-bounded, so it also catches titles that would
+  # otherwise slip past the family match on a data/analyst word, e.g.
+  # "Sales Data Analyst" or "Sales Operations Analyst". No sales roles,
+  # full stop, per explicit request — not just the "sales analyst" lookalike.
+  - sales
 
 # Families boosted in fit scoring (server/src/scoring.js), on top of the
 # core/adjacent weighting every family already gets. Order doesn't matter.
 priority_families: [data_analytics, business_reporting, data_science_ml]
+
+# Hard filter (mirrors config/india.yaml's locations.scope): only families
+# listed here pass the role gate (server/src/filters/index.js), even if
+# Tier 1/2/3 would otherwise confidently match one of the other families
+# above. The rest of the taxonomy stays defined, not deleted — widen this
+# back out any time by adding a family key here, no other edit needed.
+# Empty or omitted = no restriction (every family above is eligible).
+#
+# Widened from [data_analytics, data_engineering] after a live run showed
+# real, relevant postings (e.g. a genuine "Data Scientist Intern") being
+# dropped purely on family, while the stricter two-family scope combined
+# with active_role_types (internship/apprenticeship only, in
+# config/india.yaml) was producing zero kept jobs for days running —
+# Data Analyst/Data Engineer-titled internships specifically are rare;
+# data_science_ml and business_reporting cover the adjacent titles
+# (Data Scientist, BI/Business Analyst, MIS, etc.) that internship/
+# apprenticeship postings in this space are actually titled.
+active_families: [data_analytics, data_engineering, data_science_ml, business_reporting]
 
 # The cheap pre-filter before Tier 3 (server/src/filters/roleTier3.js, an
 # LLM call): a title with none of these tokens is default-denied without

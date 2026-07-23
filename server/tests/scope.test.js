@@ -35,7 +35,7 @@ test('runPipeline drops every non-Bengaluru posting, freshness/dedupe/fresher fi
     postedAt: new Date().toISOString(), // pretend "posted today" so freshness never interferes
   }));
 
-  const { jobs } = await runPipeline(rawJobs, cfg, { silent: true });
+  const { jobs } = await runPipeline(rawJobs, cfg, { silent: true, skipVerification: true });
   assert.ok(jobs.length > 0, 'sanity check: at least some Bengaluru fixtures should survive');
   for (const job of jobs) {
     assert.equal(job.locationCanonical, 'bengaluru', `"${job.title}" leaked through with location "${job.locationCanonical}"`);
