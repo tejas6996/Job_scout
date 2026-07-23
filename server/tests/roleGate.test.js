@@ -66,6 +66,11 @@ test('normalizeTitle strips location suffixes, roman numerals, recruiter junk an
   assert.equal(normalizeTitle('Data Analyst (Immediate Joiner)').normalized, 'data analyst');
 });
 
+test('normalizeTitle strips arabic-numeral/L-suffix internal level tiers, keeping the role word', () => {
+  assert.equal(normalizeTitle('Data Analyst 3').normalized, 'data analyst');
+  assert.equal(normalizeTitle('Data Engineer L3').normalized, 'data engineer');
+});
+
 test('the two gates report independently: role-eligible but experience-ineligible, and vice versa', () => {
   const senior = fixtures.find((f) => f.id === 'rt-02'); // "Senior Data Scientist"
   const seniorRole = evaluateRoleTier12(senior, cfg);

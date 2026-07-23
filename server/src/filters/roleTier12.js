@@ -16,6 +16,12 @@
 // exclude_titles, data_signal_keywords, title_prefilter_tokens) always
 // comes from config/roles.yaml — nothing role-specific is hardcoded here.
 const ROMAN_SUFFIX = /\b(ii|iii|iv)\b/gi;
+// Same role-word-anchored level-suffix stripped here as in stageA.js's
+// ROLE_LEVEL_SUFFIX, so "Data Analyst 3" normalizes to "data analyst" for
+// family matching — the seniority exclusion itself lives in stageA.js
+// (the experience gate), not here. Captures the role word so the
+// replacement can keep it and drop only the trailing level marker.
+const ROLE_LEVEL_SUFFIX = /\b(analyst|engineer|developer|scientist|consultant)\s*(?:[-\s]?[2-9]\b|\s*L[2-9]\b)/gi;
 const JUNK_PHRASES = [
   'immediate joiner', 'urgent hiring', 'urgent requirement', 'hot vacancy',
   'walk[- ]?in', 'work from home', 'work from office', '\\bwfh\\b', '\\bwfo\\b',
@@ -38,6 +44,7 @@ function normalizeTitle(rawTitle) {
   const locationAlt = LOCATION_WORDS.join('|');
   t = t.replace(new RegExp(`[-,]\\s*(${locationAlt})\\b.*$`, 'i'), ' '); // trailing "- Location" / ", Location"
   t = t.replace(ROMAN_SUFFIX, ' ');
+  t = t.replace(ROLE_LEVEL_SUFFIX, '$1');
 
   const bundled = /[&/]/.test(t);
 

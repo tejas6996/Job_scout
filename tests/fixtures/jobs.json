@@ -286,5 +286,50 @@
     "descriptionText": "Trainee program for automation testing, 0 years of experience required.",
     "compensationText": "",
     "expected": { "decision": "include", "role_type": "trainee" }
+  },
+  {
+    "id": "fx-33", "source": "test", "title": "Data Analyst 3", "company": "BigTechCo",
+    "companyLogo": null, "url": "https://example.com/33", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-15T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Join our analytics org as a Data Analyst 3, mentoring junior analysts on the team.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-34", "source": "test", "title": "Business Analyst 3", "company": "ConsultCo",
+    "companyLogo": null, "url": "https://example.com/34", "location": "Mumbai", "remote": false,
+    "postedAt": "2026-07-15T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Business Analyst 3 role owning stakeholder reporting for the leadership team.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-35", "source": "test", "title": "Data Engineer L3", "company": "PipelineCo",
+    "companyLogo": null, "url": "https://example.com/35", "location": "Pune", "remote": false,
+    "postedAt": "2026-07-15T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Data Engineer L3 to lead pipeline architecture decisions.",
+    "compensationText": "",
+    "expected": { "decision": "exclude", "role_type": null }
+  },
+  {
+    "id": "fx-36", "source": "test", "title": "Junior Data Analyst", "company": "ReportCo",
+    "companyLogo": null, "url": "https://example.com/36", "location": "Bengaluru", "remote": false,
+    "postedAt": "2026-07-15T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Join a team of 5 analysts working on internal reporting. 0-2 years of experience required.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
+  },
+  {
+    "id": "fx-37", "source": "test", "title": "Technical Support Analyst", "company": "HelpDeskCo",
+    "companyLogo": null, "url": "https://example.com/37", "location": "Noida", "remote": false,
+    "postedAt": "2026-07-15T00:00:00.000Z", "tags": [], "category": null, "jobType": "Full-time",
+    "rawLevel": "", "experienceText": "",
+    "descriptionText": "Handles L2 support tickets for enterprise software clients. 1-2 years of experience needed.",
+    "compensationText": "",
+    "expected": { "decision": "include", "role_type": "full_time_entry" }
   }
 ]

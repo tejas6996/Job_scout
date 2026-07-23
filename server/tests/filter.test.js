@@ -70,3 +70,24 @@ test('ambiguity policy: no years figure + no signal at all -> undecided (deferre
   const job = { title: 'Software Engineer', descriptionText: 'Build great products with us.' };
   assert.equal(evaluateStageA(job, cfg).decision, 'undecided');
 });
+
+test('hard-exclude: arabic-numeral/L-suffix internal level tiers are excluded', () => {
+  for (const title of ['Data Analyst 3', 'Business Analyst 3', 'Data Engineer L3', 'Software Developer 4']) {
+    const job = { title, descriptionText: 'Great opportunity to join our team.' };
+    assert.equal(evaluateStageA(job, cfg).decision, 'exclude', `expected "${title}" to be excluded`);
+  }
+});
+
+test('level-suffix regex does not false-positive on unrelated numbers', () => {
+  const job = {
+    title: 'Junior Data Analyst',
+    descriptionText: 'Join a team of 5 analysts working on internal reporting. 0-2 years of experience required.',
+  };
+  assert.equal(evaluateStageA(job, cfg).decision, 'include');
+
+  const supportJob = {
+    title: 'Technical Support Analyst',
+    descriptionText: 'Handles L2 support tickets for enterprise software clients. 1-2 years of experience needed.',
+  };
+  assert.equal(evaluateStageA(supportJob, cfg).decision, 'include');
+});

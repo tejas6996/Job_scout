@@ -12,6 +12,12 @@
 const TITLE_SENIOR_WORDS =
   /\b(senior|sr\.?|lead|principal|staff|architect|manager|head\s+of|director)\b/i;
 const ROMAN_SUFFIX = /\b(II|III|IV)\b/; // e.g. "Software Engineer II" — case-sensitive on purpose
+// Internal level-number suffix attached directly to a role word, e.g. "Data
+// Analyst 3", "Business Analyst II" (covered above), "Data Engineer L3".
+// Anchored to the role word on purpose — an unanchored digit/roman-numeral
+// check is too broad and would reject legit postings ("team of 5", "L2
+// support ticket").
+const ROLE_LEVEL_SUFFIX = /\b(analyst|engineer|developer|scientist|consultant)\s*(?:[-\s]?[2-9]\b|\s*L[2-9]\b)/i;
 
 const YEARS_PLUS = /(\d{1,2})\s*\+\s*(?:years?|yrs?)/gi;
 const YEARS_MIN_AT_LEAST = /(?:minimum|min\.?|at\s+least)\s+(?:of\s+)?(\d{1,2})\s*(?:years?|yrs?)/gi;
@@ -61,6 +67,7 @@ export function evaluateStageA(job, cfg) {
   const excludeTitleWords = cfg.roles.exclude_title_keywords || [];
 
   const titleSeniorSignal = TITLE_SENIOR_WORDS.test(title) || ROMAN_SUFFIX.test(title) ||
+    ROLE_LEVEL_SUFFIX.test(title) ||
     excludeTitleWords.some((w) => buildSignalRegex(w).test(title));
   const anySeniorSignal = titleSeniorSignal || TITLE_SENIOR_WORDS.test(description);
   const titleFresherSignal = anyMatch(title, fresherSignals);
