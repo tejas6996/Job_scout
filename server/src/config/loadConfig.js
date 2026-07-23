@@ -15,6 +15,11 @@ import yaml from 'js-yaml';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = path.resolve(__dirname, '../../../config/india.yaml');
 const ROLES_PATH = path.resolve(__dirname, '../../../config/roles.yaml');
+// Candidate profile read once at startup — this dashboard has no Notion
+// "My Profile" page (see server/src/llm/matchScam.js), so a local free-text
+// file stands in for it. Missing file degrades to '' rather than throwing —
+// match_score/resume_bullets just come back weaker, never crash the run.
+const PROFILE_PATH = path.resolve(__dirname, '../../../config/profile.md');
 
 let cached = null;
 
@@ -22,7 +27,8 @@ export function loadConfig() {
   if (cached) return cached;
   const raw = fs.readFileSync(CONFIG_PATH, 'utf8');
   const rolesRaw = fs.readFileSync(ROLES_PATH, 'utf8');
-  cached = { ...yaml.load(raw), roleTaxonomy: yaml.load(rolesRaw) };
+  const profileText = fs.existsSync(PROFILE_PATH) ? fs.readFileSync(PROFILE_PATH, 'utf8').trim() : '';
+  cached = { ...yaml.load(raw), roleTaxonomy: yaml.load(rolesRaw), profileText };
   return cached;
 }
 
