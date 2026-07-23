@@ -14,10 +14,11 @@ import * as remotive from './remotive.js';
 import * as adzuna from './adzuna.js';
 import * as jsearch from './jsearch.js';
 import * as atsBoards from './atsBoards.js';
+import * as companyPages from './companyPages.js';
 import { loadConfig } from '../config/loadConfig.js';
 import { runPipeline } from '../pipeline.js';
 
-const PROVIDERS = { jobicy, remotive, adzuna, jsearch, ats_boards: atsBoards };
+const PROVIDERS = { jobicy, remotive, adzuna, jsearch, ats_boards: atsBoards, company_pages: companyPages };
 export const PROVIDER_NAMES = Object.keys(PROVIDERS);
 
 const sourceCache = new Map(); // name -> { rawJobs, fetchedAt }
